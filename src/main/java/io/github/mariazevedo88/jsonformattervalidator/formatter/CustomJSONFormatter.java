@@ -1,4 +1,4 @@
-package io.github.mariazevedo88.jsonobjectgetter.formatter;
+package io.github.mariazevedo88.jsonformattervalidator.formatter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,6 +11,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 /**
+ * Class that verify a json and format in cases of invalid json
+ * 
  * @author Mariana Azevedo
  * @since 10/02/2019
  *
@@ -20,6 +22,11 @@ public class CustomJSONFormatter {
 	private static final Logger logger = Logger.getLogger(CustomJSONFormatter.class.getName());
 	private JsonObject validJson;
 	
+	/**
+	 * Method that verify in a object is a valid or invalid json
+	 * @param json
+	 * @return
+	 */
 	private boolean isValidJson(Object json){
 		
 		if(json instanceof BufferedReader){
@@ -39,6 +46,10 @@ public class CustomJSONFormatter {
         return false;
 	}
 	
+	/**
+	 * Method that parses a json object
+	 * @param json
+	 */
 	private void parseJSONObject(Object json) {
 		
 		JsonElement res = null;
@@ -81,6 +92,12 @@ public class CustomJSONFormatter {
 		return builderModified.toString();
 	}
 	
+	/**
+	 * Method that checks json validity and format if needed
+	 * @param json
+	 * @return
+	 * @throws IOException
+	 */
 	public JsonObject checkValidityAndFormatObject(Object json) throws IOException {
 		
 		String jsonToTest = null;
