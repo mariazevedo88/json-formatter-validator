@@ -2,6 +2,8 @@ package io.github.mariazevedo88.jsonformattervalidator.formatter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
@@ -23,7 +25,10 @@ public class CustomJSONFormatter {
 	private JsonObject validJson;
 	
 	/**
-	 * Method that verify in a object is a valid or invalid json
+	 * Method that verify in a object is a valid or invalid json.
+	 * 
+	 * @author Mariana Azevedo
+	 * @since 10/02/2019
 	 * @param json
 	 * @return
 	 */
@@ -47,7 +52,10 @@ public class CustomJSONFormatter {
 	}
 	
 	/**
-	 * Method that parses a json object
+	 * Method that parses a json object.
+	 * 
+	 * @author Mariana Azevedo
+	 * @since 10/02/2019
 	 * @param json
 	 */
 	private void parseJSONObject(Object json) {
@@ -67,10 +75,6 @@ public class CustomJSONFormatter {
         }
 	}
 	
-	public JsonObject getValidJson() {
-		return validJson;
-	}
-
 	/**
 	 * Method to convert a invalid json, add double quotes where is needed. Based on the answers of this question:
 	 * https://stackoverflow.com/questions/54584696/how-add-quotes-in-a-json-string-using-java-when-the-value-is-a-date
@@ -86,14 +90,155 @@ public class CustomJSONFormatter {
 	 * @param invalidJson
 	 * @return
 	 */
-	public static String getInvalidJsonToFormat(String invalidJson) {
+	private static String getInvalidJsonToFormat(String invalidJson) {
 		invalidJson = invalidJson.replaceAll("(?<=\\{|, ?)([a-zA-Z]+?): ?(?![ \\{\\[])(.+?)(?=,|})", "\"$1\": \"$2\"");
 		StringBuilder builderModified = new StringBuilder(invalidJson);
-		return builderModified.toString();
+		
+		builderModified = fixFieldsWithCommasWronglyModified(builderModified);
+		invalidJson = replaceControlDelimiters(builderModified);
+		
+		return invalidJson;
+	}
+
+	/**
+	 * Method that replaces some control delimiters in the fix routine on fields with wrong commas.
+	 * 
+	 * @author Mariana Azevedo
+	 * @since 17/02/2019
+	 * @param builderModified
+	 * @return
+	 */
+	private static String replaceControlDelimiters(StringBuilder builderModified) {
+		return builderModified.toString().replaceAll(";.", ",");
+	}
+
+	/**
+	 * Method that fix invalid fields wrongly converted by the regex of getInvalidJsonToFormat() method.
+	 * 
+	 * @author Mariana Azevedo
+	 * @since 17/02/2019
+	 * @param builderModified
+	 * @return
+	 */
+	private static StringBuilder fixFieldsWithCommasWronglyModified(StringBuilder builderModified) {
+		
+		String [] invalidJsonValues = builderModified.toString().split(",");
+		boolean hasInvalidValues = true;
+		
+		while(hasInvalidValues) {
+			builderModified = cleanInvalidJsonValues(invalidJsonValues, builderModified);
+			invalidJsonValues = builderModified.toString().split(",");
+			
+			if(!isStringHasInvalidJsonValues(invalidJsonValues)) {
+				hasInvalidValues = false;
+			}
+		}
+		return builderModified;
 	}
 	
 	/**
-	 * Method that checks json validity and format if needed
+	 * Method that verifies with string still has a invalid values or keys.
+	 * 
+	 * @author Mariana Azevedo
+	 * @since 17/02/2019
+	 * @param invalidJsonValues
+	 * @return
+	 */
+	private static boolean isStringHasInvalidJsonValues(String [] invalidJsonValues) {
+		for(String str : invalidJsonValues) {
+			if(!str.contains(":")) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Method that clean fields wrongly separated with commas and append these strings.
+	 * 
+	 * @author Mariana Azevedo
+	 * @since 17/02/2019
+	 * @param invalidJsonValues
+	 * @param builder
+	 * @return
+	 */
+	private static StringBuilder cleanInvalidJsonValues(String[] invalidJsonValues, StringBuilder builder) {
+		
+		StringBuilder builderModified = new StringBuilder(builder);
+		String previousField = "";
+		
+		for(int i=0; i<invalidJsonValues.length; i++) {
+			String str = invalidJsonValues[i];
+			if(str.contains(":")) {
+				previousField = str;
+			}else{
+				if(!str.isEmpty()) {
+					cleanWrongQuotesOnFields(builderModified, previousField, str);
+					break;
+				}
+			}
+		}
+		
+		return builderModified;
+	}
+
+	/**
+	 * Method that traverses a string array and identifies whether the string is a valid key and value set. 
+	 * If it is not and is part of a whole word broken by commas, it applies treatment to clean and reassemble 
+	 * the string by concatenating with the section previously treated.
+	 * 
+	 * @author Mariana Azevedo
+	 * @since 17/02/2019
+	 * @param builderModified
+	 * @param previousField
+	 * @param str
+	 */
+	private static void cleanWrongQuotesOnFields(StringBuilder builderModified, String previousField, String str) {
+		
+		StringBuilder sbReplace = new StringBuilder(previousField);
+		int lastIndexOf = previousField.length();
+		
+		if(sbReplace.lastIndexOf("\"") == lastIndexOf-1) {
+			sbReplace = sbReplace.deleteCharAt(lastIndexOf-1);
+			sbReplace.insert(lastIndexOf-1, ";.");
+		}
+		
+		sbReplace.append(str).append("\"");
+		
+		Pattern pattern = Pattern.compile(str);
+		replaceStringBasedOnAPatter(builderModified, pattern, "");
+		
+		pattern = Pattern.compile(previousField);
+		replaceStringBasedOnAPatter(builderModified, pattern, sbReplace.toString());
+		
+		pattern = Pattern.compile(",,");
+		replaceStringBasedOnAPatter(builderModified, pattern, ",");
+	}
+
+	/**
+	 * Method that replaces a string based on a pattern.
+	 * 
+	 * @author Mariana Azevedo
+	 * @since 17/02/2019
+	 * @param builderModified
+	 * @param pattern
+	 * @param replacement
+	 */
+	private static void replaceStringBasedOnAPatter(StringBuilder builderModified, Pattern pattern, String replacement) {
+		
+		Matcher matcher = pattern.matcher(builderModified);
+		int start = 0;
+		while (matcher.find(start)) {
+			builderModified.replace(matcher.start(), matcher.end(), replacement);
+		}
+	}
+	
+	/**
+	 * Method that checks json validity and format if needed.
+	 * 
+	 * @author Mariana Azevedo
+	 * @since 17/02/2019
 	 * @param json
 	 * @return
 	 * @throws IOException
@@ -119,6 +264,17 @@ public class CustomJSONFormatter {
 		
 		logger.info("Valid json: " + this.validJson);
 		
+		return validJson;
+	}
+	
+	/**
+	 * Method that return a valid json
+	 * 
+	 * @author Mariana Azevedo
+	 * @since 10/02/2019
+	 * @return
+	 */
+	public JsonObject getValidJson() {
 		return validJson;
 	}
 
