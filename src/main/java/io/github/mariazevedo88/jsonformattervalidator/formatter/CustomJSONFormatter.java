@@ -2,8 +2,12 @@ package io.github.mariazevedo88.jsonformattervalidator.formatter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 
@@ -109,7 +113,7 @@ public class CustomJSONFormatter {
 	 * @return
 	 */
 	private static String replaceControlDelimiters(StringBuilder builderModified) {
-		return builderModified.toString().replaceAll(";.", ",");
+		return builderModified.toString().replaceAll(";", ",");
 	}
 
 	/**
@@ -145,13 +149,8 @@ public class CustomJSONFormatter {
 	 * @return
 	 */
 	private static boolean isStringHasInvalidJsonValues(String [] invalidJsonValues) {
-		for(String str : invalidJsonValues) {
-			if(!str.contains(":")) {
-				return true;
-			}
-		}
-		
-		return false;
+		Set<String> collection = Arrays.stream(invalidJsonValues).collect(Collectors.toSet());
+		return collection.stream().anyMatch(str -> !str.contains(":"));
 	}
 	
 	/**
@@ -168,8 +167,8 @@ public class CustomJSONFormatter {
 		StringBuilder builderModified = new StringBuilder(builder);
 		String previousField = "";
 		
-		for(int i=0; i<invalidJsonValues.length; i++) {
-			String str = invalidJsonValues[i];
+		List<String> collection = Arrays.stream(invalidJsonValues).collect(Collectors.toList());
+		for(String str : collection) {
 			if(str.contains(":")) {
 				previousField = str;
 			}else{
@@ -201,7 +200,7 @@ public class CustomJSONFormatter {
 		
 		if(sbReplace.lastIndexOf("\"") == lastIndexOf-1) {
 			sbReplace = sbReplace.deleteCharAt(lastIndexOf-1);
-			sbReplace.insert(lastIndexOf-1, ";.");
+			sbReplace.insert(lastIndexOf-1, ";");
 		}
 		
 		sbReplace.append(str).append("\"");
