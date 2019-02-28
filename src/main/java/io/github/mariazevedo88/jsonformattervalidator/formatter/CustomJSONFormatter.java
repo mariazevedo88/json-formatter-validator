@@ -95,12 +95,41 @@ public class CustomJSONFormatter {
 	 * @return
 	 */
 	private static String getInvalidJsonToFormat(String invalidJson) {
-		invalidJson = invalidJson.replaceAll("(?<=\\{|, ?)([a-zA-Z]+?): ?(?![ \\{\\[])(.+?)(?=,|})", "\"$1\": \"$2\"");
+		invalidJson = fixEmptyFields(invalidJson); //format empty fields before apply the main regex
+		invalidJson = invalidJson.replaceAll("(?<=\\{|, ?)([a-zA-Z]+?): ?(?![\\{\\[])(.+?)(?=,|})", "\"$1\": \"$2\"");
+		invalidJson = fixFieldsWithSimpleQuotes(invalidJson);
+		
 		StringBuilder builderModified = new StringBuilder(invalidJson);
 		
 		builderModified = fixFieldsWithCommasWronglyModified(builderModified);
 		invalidJson = replaceControlDelimiters(builderModified);
 		
+		return invalidJson;
+	}
+
+	/**
+	 * Method to clean a string with single quotes
+	 * 
+	 * @author Mariana Azevedo
+	 * @since 28/02/2019
+	 * @param invalidJson
+	 * @return
+	 */
+	private static String fixFieldsWithSimpleQuotes(String invalidJson) {
+		return invalidJson.replaceAll("''", "");
+	}
+
+	/**
+	 * Method to fix json keys with empty values before apply the main regex
+	 * 
+	 * @author Mariana Azevedo
+	 * @since 28/02/2019
+	 * @param invalidJson
+	 * @return
+	 */
+	private static String fixEmptyFields(String invalidJson) {
+		invalidJson = invalidJson.replaceAll("(:,)", ":\'\',");
+		invalidJson = invalidJson.replaceAll("(:})", ": \'\'}");
 		return invalidJson;
 	}
 
