@@ -9,7 +9,7 @@ The method `checkValidityAndFormatObject()` checks if json is valid or not. If j
 **Input**
 
 ```
-String invalidJSON = "{id: 267107086801, productCode: 02-671070868, lastUpdate: 2018-07-15, lastUpdateTimestamp: 2018-07-15 01:49:58, payment: [{sequential: 1, id: CREDIT_CARD, value: 188, installments: 9}]}";
+String invalidJSON = "{id:267107086801,productCode:02-671070868,lastUpdate:2018-07-15,lastUpdateTimestamp:2018-07-15 01:49:58,payment:[{sequential:1,id:CREDIT_CARD,value:188,installments:9}]}";
 CustomJSONFormatter formatter = new CustomJSONFormatter();
 formatter.checkValidityAndFormatObject(invalidJSON);  
 ```
@@ -18,7 +18,7 @@ formatter.checkValidityAndFormatObject(invalidJSON);
 
 ```
 19/02/14 00:08:57 INFO jsonformattervalidator.JsonFormatterValidatorApplication: Started Json Formatter Validator Aplication
-19/02/14 00:08:57 INFO formatter.CustomJSONFormatter: Invalid json: {id: 267107086801, productCode: 02-671070868, lastUpdate: 2018-07-15, lastUpdateTimestamp: 2018-07-15 01:49:58, payment: [{sequential: 1, id: CREDIT_CARD, value: 188, installments: 9}]}
+19/02/14 00:08:57 INFO formatter.CustomJSONFormatter: Invalid json: {id: 267107086801,productCode:02-671070868,lastUpdate:2018-07-15,lastUpdateTimestamp:2018-07-15 01:49:58,payment:[{sequential:1,id: CREDIT_CARD,value: 188,installments:9}]}
 19/02/14 00:08:57 INFO formatter.CustomJSONFormatter: Valid json: {"id":"267107086801","productCode":"02-671070868","lastUpdate":"2018-07-15","lastUpdateTimestamp":"2018-07-15 01:49:58","payment":[{"sequential":"1","id":"CREDIT_CARD","value":"188","installments":"9"}]}
 ```
 
@@ -52,8 +52,8 @@ You must import .jar into the classpath of your project. If your project is a ma
 <dependency>
    	<groupId>io.github.mariazevedo88</groupId>
    	<artifactId>json-formatter-validator</artifactId>
-	<version>1.1.0</version>
-	<scope>system</scope>
-	<systemPath>${project.basedir}/src/main/resources/json-formatter-validator-jar-with-dependencies.jar</systemPath>
+		<version>1.1.2</version>
+		<scope>system</scope>
+		<systemPath>${project.basedir}/src/main/resources/json-formatter-validator-jar-with-dependencies.jar</systemPath>
 </dependency>
 ```
