@@ -232,7 +232,15 @@ public class CustomJSONFormatter {
 			sbReplace.insert(lastIndexOf-1, ";");
 		}
 		
-		sbReplace.append(str).append("\"");
+		if(str.contains("}")){
+			//If the field that has commas in the middle, but is at the end of the object, 
+			//treat so that the quotes are in the right place
+			int lastIndexOfStr = str.length();
+			String strModified = new StringBuilder(str).deleteCharAt(lastIndexOfStr-1).toString(); 
+			sbReplace.append(strModified).append("\"}");
+		}else{
+			sbReplace.append(str).append("\"");
+		}
 		
 		Pattern pattern = Pattern.compile(str);
 		replaceStringBasedOnAPatter(builderModified, pattern, "");
