@@ -52,8 +52,8 @@ You must import .jar into the classpath of your project. If your project is a ma
 <dependency>
    	<groupId>io.github.mariazevedo88</groupId>
    	<artifactId>json-formatter-validator</artifactId>
-		<version>1.1.3</version>
-		<scope>system</scope>
-		<systemPath>${project.basedir}/src/main/resources/json-formatter-validator-jar-with-dependencies.jar</systemPath>
+	<version>1.1.3</version>
+	<scope>system</scope>
+	<systemPath>${project.basedir}/src/main/resources/json-formatter-validator-jar-with-dependencies.jar</systemPath>
 </dependency>
 ```
