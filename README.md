@@ -1,4 +1,4 @@
-# json-formatter-validator [![Build Status](https://travis-ci.org/mariazevedo88/json-formatter-validator.svg?branch=master)](https://travis-ci.org/mariazevedo88/json-formatter-validator)
+# json-formatter-validator [![Build Status](https://travis-ci.org/mariazevedo88/json-formatter-validator.svg?branch=master)](https://travis-ci.org/mariazevedo88/json-formatter-validator) [![Coverage Status](https://coveralls.io/repos/github/mariazevedo88/json-formatter-validator/badge.svg?branch=master)](https://coveralls.io/github/mariazevedo88/json-formatter-validator?branch=master)
 
 Library used to format an invalid json: a string in json-like format, but no quotation marks on keys and values. The tool works with two input types: string and json file. 
 
