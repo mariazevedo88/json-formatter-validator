@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
+import com.google.gson.JsonObject;
+
 import io.github.mariazevedo88.jsonformattervalidator.formatter.CustomJSONFormatter;
 
 /**
@@ -16,6 +18,8 @@ import io.github.mariazevedo88.jsonformattervalidator.formatter.CustomJSONFormat
 public class JsonFormatterValidatorApplication {
 	
 	private static final Logger logger = Logger.getLogger(JsonFormatterValidatorApplication.class.getName());
+	
+	private static JsonObject json;
 
 	public static void main(String[] args) throws IOException{
 		logger.info("Started Json Formatter Validator Aplication");
@@ -23,8 +27,12 @@ public class JsonFormatterValidatorApplication {
 		CustomJSONFormatter formatter = new CustomJSONFormatter();
 		
 		for(String arg : args) {
-			formatter.checkValidityAndFormatObject(arg);
+			json = formatter.checkValidityAndFormatObject(arg);
 		}
+	}
+
+	public static JsonObject getJson() {
+		return json;
 	}
 
 }

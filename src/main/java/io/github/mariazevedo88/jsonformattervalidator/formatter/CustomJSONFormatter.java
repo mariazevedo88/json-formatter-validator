@@ -315,6 +315,11 @@ public class CustomJSONFormatter {
 			reader = (BufferedReader) json;
 		}
 		
+		if(json == null) {
+			this.validJson = null;
+			throw new NullPointerException("Object to validated is null.");
+		}
+		
 		if(!isValidJson(json)) {
 			jsonToTest = getInvalidJsonToFormat(json.toString());
 			if(reader == null){
