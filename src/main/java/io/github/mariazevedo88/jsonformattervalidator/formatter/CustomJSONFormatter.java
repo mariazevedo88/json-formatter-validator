@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
@@ -130,6 +131,7 @@ public class CustomJSONFormatter {
 	private static String fixEmptyFields(String invalidJson) {
 		invalidJson = invalidJson.replaceAll("(:,)", ":\'\',");
 		invalidJson = invalidJson.replaceAll("(:})", ": \'\'}");
+		invalidJson = invalidJson.replaceAll("(,,)", ":\'\',");
 		return invalidJson;
 	}
 
@@ -243,14 +245,39 @@ public class CustomJSONFormatter {
 		}
 		
 		Pattern pattern = Pattern.compile(str);
-		replaceStringBasedOnAPatter(builderModified, pattern, "");
+		replaceStringBasedOnAPattern(builderModified, pattern, "");
 		
-		pattern = Pattern.compile(previousField);
-		replaceStringBasedOnAPatter(builderModified, pattern, sbReplace.toString());
+		try {
+			pattern = Pattern.compile(previousField);
+			replaceStringBasedOnAPattern(builderModified, pattern, sbReplace.toString());
+		}catch (PatternSyntaxException e){
+			splitPatternToNearowTheSearch(builderModified, previousField, sbReplace);
+		}
 		
 		pattern = Pattern.compile(",,");
-		replaceStringBasedOnAPatter(builderModified, pattern, ",");
+		replaceStringBasedOnAPattern(builderModified, pattern, ",");
 	}
+
+	/**
+	 * Method to cut a string to approximate the search and avoid cases of PatternSyntaxException
+	 * 
+	 * @author Mariana Azevedo
+	 * @since 01/03/2019
+	 * 
+	 * @param builderModified
+	 * @param previousField
+	 * @param sbReplace
+	 */
+	private static void splitPatternToNearowTheSearch(StringBuilder builderModified, String previousField,
+			StringBuilder sbReplace) {
+		
+		String[] patternSplit = previousField.split(":");
+		String[] sbReplaceToSplit = sbReplace.toString().split(":");
+		
+		Pattern pattern = Pattern.compile(patternSplit[patternSplit.length-1]);
+		replaceStringBasedOnAPattern(builderModified, pattern, sbReplaceToSplit[sbReplaceToSplit.length-1]);
+	}
+	
 
 	/**
 	 * Method that replaces a string based on a pattern.
@@ -261,7 +288,7 @@ public class CustomJSONFormatter {
 	 * @param pattern
 	 * @param replacement
 	 */
-	private static void replaceStringBasedOnAPatter(StringBuilder builderModified, Pattern pattern, String replacement) {
+	private static void replaceStringBasedOnAPattern(StringBuilder builderModified, Pattern pattern, String replacement) {
 		
 		Matcher matcher = pattern.matcher(builderModified);
 		int start = 0;
