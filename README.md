@@ -1,4 +1,4 @@
-# json-formatter-validator
+# json-formatter-validator [![Build Status](https://travis-ci.org/mariazevedo88/json-formatter-validator.svg?branch=master)](https://travis-ci.org/mariazevedo88/json-formatter-validator) [![Coverage Status](https://coveralls.io/repos/github/mariazevedo88/json-formatter-validator/badge.svg?branch=master)](https://coveralls.io/github/mariazevedo88/json-formatter-validator?branch=master)
 
 Library used to format an invalid json: a string in json-like format, but no quotation marks on keys and values. The tool works with two input types: string and json file. 
 
@@ -40,9 +40,10 @@ logger.info(id.getAsLong());
 
 ## Dependencies
 
-- Java 8
+- [Java 8](https://www.oracle.com/technetwork/pt/java/javase/downloads/index.html)
 - [Gson](https://mvnrepository.com/artifact/com.google.code.gson/gson/2.8.5)
 - [log4j](https://mvnrepository.com/artifact/log4j/log4j/1.2.17)
+- [JUnit 5](https://junit.org/junit5/docs/current/user-guide/)
 
 ## How to use
 
@@ -52,7 +53,7 @@ You must import .jar into the classpath of your project. If your project is a ma
 <dependency>
    	<groupId>io.github.mariazevedo88</groupId>
    	<artifactId>json-formatter-validator</artifactId>
-	<version>1.1.3</version>
+	<version>1.1.4</version>
 	<scope>system</scope>
 	<systemPath>${project.basedir}/src/main/resources/json-formatter-validator-jar-with-dependencies.jar</systemPath>
 </dependency>

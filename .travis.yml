@@ -1,0 +1,12 @@
+language: java
+sudo: false
+jdk:
+  - oraclejdk8
+
+git:
+  depth: 3 #clone repository to a maximum depth of 3 commits
+
+script: "mvn clean install -Dmaven.javadoc.skip=true -B -V"
+
+after_success:
+  - mvn clean test jacoco:report coveralls:report #generate Jacoco reports
