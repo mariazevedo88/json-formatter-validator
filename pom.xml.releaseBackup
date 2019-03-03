@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.mariazevedo88</groupId>
 	<artifactId>json-formatter-validator</artifactId>
-	<version>1.1.4</version>
+	<version>1.1.4-SNAPSHOT</version>
 	
 	<name>json-formatter-validator</name>
 	<description>A json validator application and formatter of invalid json cases</description>
@@ -52,7 +53,7 @@
 		<connection>scm:git:git://github.com/mariazevedo88/json-formatter-validator.git</connection>
 		<developerConnection>scm:git:git@github.com:mariazevedo88/json-formatter-validator.git</developerConnection>
 		<url>https://github.com/mariazevedo88/json-formatter-validator.git</url>
-		<tag>json-formatter-validator-1.1.4</tag>
+		<tag>HEAD</tag>
 	</scm>
 	
 	<distributionManagement>
