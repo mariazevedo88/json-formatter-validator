@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.mariazevedo88</groupId>
 	<artifactId>json-formatter-validator</artifactId>
-	<version>1.1.6-SNAPSHOT</version>
+	<version>1.1.5-SNAPSHOT</version>
 	
 	<name>json-formatter-validator</name>
 	<description>A json validator application and formatter of invalid json cases</description>
@@ -289,7 +289,7 @@
    <profiles>
 		<!-- GPG Signature on release -->
 		<profile>
-			<id>sign-artifacts</id>
+			<id>release-sign-artifacts</id>
 			<activation>
 				<property>
 					<name>performRelease</name>
@@ -309,10 +309,6 @@
 								<goals>
 									<goal>sign</goal>
 								</goals>
-								<configuration>
-                                    <homedir>${gpg.homedir}</homedir>
-                                    <passphrase>${gpg.passphrase}</passphrase>
-                                </configuration>
 							</execution>
 						</executions>
 					</plugin>
