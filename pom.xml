@@ -8,6 +8,21 @@
 	<name>json-formatter-validator</name>
 	<description>Java tool for json validation via string or file and correction of invalid json-like string</description>
 	<url>https://github.com/mariazevedo88/json-formatter-validator</url>
+	
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>https://opensource.org/licenses/MIT</url>
+		</license>
+	</licenses>
+	
+	<developers>
+		<developer>
+			<name>Mariana Azevedo</name>
+			<email>mariana@bsi.ufla.br</email>
+			<timezone>UTC-03:00</timezone>
+		</developer>
+	</developers>
   
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -32,26 +47,11 @@
 		
 	</properties>
 	
-	<licenses>
-		<license>
-			<name>MIT License</name>
-			<url>https://opensource.org/licenses/MIT</url>
-		</license>
-	</licenses>
-	
-	<developers>
-		<developer>
-			<name>Mariana Azevedo</name>
-			<email>mariana@bsi.ufla.br</email>
-			<timezone>UTC-03:00</timezone>
-		</developer>
-	</developers>
-	
 	<scm>
 		<connection>scm:git:git://github.com/mariazevedo88/json-formatter-validator.git</connection>
 		<developerConnection>scm:git:git@github.com:mariazevedo88/json-formatter-validator.git</developerConnection>
 		<url>https://github.com/mariazevedo88/json-formatter-validator</url>
-		<tag>json-formatter-validator-1.1.4</tag>
+		<tag>json-formatter-validator-1.1.5</tag>
 	</scm>
 	
 	<distributionManagement>
