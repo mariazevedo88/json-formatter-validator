@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.mariazevedo88</groupId>
 	<artifactId>json-formatter-validator</artifactId>
-	<version>1.1.4</version>
+	<version>1.1.5-SNAPSHOT</version>
 	
 	<name>json-formatter-validator</name>
 	<description>A json validator application and formatter of invalid json cases</description>
