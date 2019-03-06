@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 
 /**
@@ -105,6 +106,7 @@ public class CustomJSONFormatter {
 		builderModified = fixFieldsWithCommasWronglyModified(builderModified);
 		invalidJson = replaceControlDelimiters(builderModified);
 		
+		
 		return invalidJson;
 	}
 
@@ -162,12 +164,18 @@ public class CustomJSONFormatter {
 		
 		while(hasInvalidValues) {
 			builderModified = cleanInvalidJsonValues(invalidJsonValues, builderModified);
+			
+			if(builderModified.length() == 0) {
+				throw new JsonParseException("Error: JSON with more invalid characters than commas and quotes on keys and values.");
+			}
+
 			invalidJsonValues = builderModified.toString().split(",");
 			
 			if(!isStringHasInvalidJsonValues(invalidJsonValues)) {
 				hasInvalidValues = false;
 			}
 		}
+		
 		return builderModified;
 	}
 	
@@ -244,7 +252,7 @@ public class CustomJSONFormatter {
 			sbReplace.append(str).append("\"");
 		}
 		
-		Pattern pattern = Pattern.compile(str);
+		Pattern pattern = Pattern.compile(str, Pattern.LITERAL);
 		replaceStringBasedOnAPattern(builderModified, pattern, "");
 		
 		try {

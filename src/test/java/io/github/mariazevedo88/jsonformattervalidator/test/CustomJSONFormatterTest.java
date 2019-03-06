@@ -130,6 +130,15 @@ public class CustomJSONFormatterTest{
 		assertTrue(json.isJsonObject());
 	}
 	
+	@Test
+	@DisplayName("Get a Valid JSON With Dot Before Commas")
+	@Order(11)
+	public void getJSONWithDotBeforeComma() throws IOException {
+		String jsonWithDotBeforeComma = "{id:106946382801,productCode:01-69463828,purchaseDate:2018-07-22,lastUpdate:2018-07-22,deliveryAddress:{street:Rua Pastor Blablabla,number:666,additionalInfo:Apto 14, bloco B, pru00e9dio vermelho,reference:Pru00f3ximo ao shopping aricanduva,neighborhood:Jardim Imperador (Zona Leste),city:Sao Paulo,state:SP,zipcode:00000000},billingAddress:{street:Rua Pastor Blablabla,number:666,additionalInfo:Bloco B, pru00e9dio vermelho.,reference:Pru00f3ximo ao shopping aricanduva,neighborhood:Jardim Imperador (Zona Leste),city:Sao Paulo,state:SP,zipcode:00000000},totalAmount:169.89,totalFreight:0,totalDiscount:0,totalInterest:0,paymentMethods:[{sequential:1,id:CREDIT_CARD,value:169.89,installments:2}]}";
+		JsonObject json = formatter.checkValidityAndFormatObject(jsonWithDotBeforeComma);
+		assertTrue(json.isJsonObject());
+	}
+	
 	@AfterAll
 	public void tearDown() {
 		formatter = null;
