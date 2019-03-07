@@ -3,6 +3,10 @@ package io.github.mariazevedo88.jsonformattervalidator.test;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 
 import org.junit.jupiter.api.AfterAll;
@@ -16,6 +20,8 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSyntaxException;
 
 import io.github.mariazevedo88.jsonformattervalidator.JsonFormatterValidatorApplication;
 import io.github.mariazevedo88.jsonformattervalidator.formatter.CustomJSONFormatter;
@@ -137,6 +143,63 @@ public class CustomJSONFormatterTest{
 		String jsonWithDotBeforeComma = "{id:106946382801,productCode:01-69463828,purchaseDate:2018-07-22,lastUpdate:2018-07-22,deliveryAddress:{street:Rua Pastor Blablabla,number:666,additionalInfo:Apto 14, bloco B, pru00e9dio vermelho,reference:Pru00f3ximo ao shopping aricanduva,neighborhood:Jardim Imperador (Zona Leste),city:Sao Paulo,state:SP,zipcode:00000000},billingAddress:{street:Rua Pastor Blablabla,number:666,additionalInfo:Bloco B, pru00e9dio vermelho.,reference:Pru00f3ximo ao shopping aricanduva,neighborhood:Jardim Imperador (Zona Leste),city:Sao Paulo,state:SP,zipcode:00000000},totalAmount:169.89,totalFreight:0,totalDiscount:0,totalInterest:0,paymentMethods:[{sequential:1,id:CREDIT_CARD,value:169.89,installments:2}]}";
 		JsonObject json = formatter.checkValidityAndFormatObject(jsonWithDotBeforeComma);
 		assertTrue(json.isJsonObject());
+	}
+	
+	@Test
+	@DisplayName("Get a JSON From Empty String")
+	@Order(12)
+	public void getJSONFromEmptyString() throws IOException {
+		assertThrows(JsonParseException.class,()->{
+			formatter.checkValidityAndFormatObject("");
+	    });
+	}
+	
+	@Test
+	@DisplayName("Get a JSON From Empty Object as a String")
+	@Order(13)
+	public void getJSONFromEmptyObjectAsString() throws IOException {
+		assertThrows(StringIndexOutOfBoundsException.class,()->{
+			formatter.checkValidityAndFormatObject("{}");
+	    });
+	}
+	
+	@Test
+	@DisplayName("Get a JSON From Json Object without a value")
+	@Order(14)
+	public void getJSONFromJsonObjectWithoutValue() throws IOException {
+		assertThrows(StringIndexOutOfBoundsException.class,()->{
+			formatter.checkValidityAndFormatObject("{blablablabla}");
+	    });
+	}
+	
+	@Test
+	@DisplayName("Get a JSON From Json Object with a comma as value")
+	@Order(15)
+	public void getJSONFromJsonObjectWithCommaAsValue() throws IOException {
+		assertThrows(JsonSyntaxException.class,()->{
+			formatter.checkValidityAndFormatObject("{id: ,}");
+	    });
+	}
+	
+	@Test
+	@DisplayName("Get a Valid JSON from a JSON file")
+	@Order(16)
+	public void getJSONFromJsonFile() throws IOException {
+		File file = new File("src/test/resources/mock.json");
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		JsonObject json = formatter.checkValidityAndFormatObject(reader);
+		assertTrue(json.isJsonObject());
+	}
+	
+	@Test
+	@DisplayName("Get a Invalid JSON from a JSON file")
+	@Order(17)
+	public void getInvalidJSONFromJsonFile() throws IOException {
+		assertThrows(FileNotFoundException.class,()->{
+			File file = new File("");
+			BufferedReader reader = new BufferedReader(new FileReader(file));
+			formatter.checkValidityAndFormatObject(reader);
+	    });
 	}
 	
 	@AfterAll

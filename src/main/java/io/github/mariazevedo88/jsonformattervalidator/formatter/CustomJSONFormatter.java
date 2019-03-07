@@ -17,6 +17,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.stream.MalformedJsonException;
 
 /**
  * Class that verify a json and format in cases of invalid json
@@ -95,6 +97,7 @@ public class CustomJSONFormatter {
 	 * @since 10/02/2019
 	 * @param invalidJson
 	 * @return
+	 * @throws MalformedJsonException 
 	 */
 	private static String getInvalidJsonToFormat(String invalidJson) {
 		invalidJson = fixEmptyFields(invalidJson); //format empty fields before apply the main regex
@@ -156,8 +159,9 @@ public class CustomJSONFormatter {
 	 * @since 17/02/2019
 	 * @param builderModified
 	 * @return
+	 * @throws MalformedJsonException 
 	 */
-	private static StringBuilder fixFieldsWithCommasWronglyModified(StringBuilder builderModified) {
+	private static StringBuilder fixFieldsWithCommasWronglyModified(StringBuilder builderModified){
 		
 		String [] invalidJsonValues = builderModified.toString().split(",");
 		boolean hasInvalidValues = true;
@@ -174,6 +178,10 @@ public class CustomJSONFormatter {
 			if(!isStringHasInvalidJsonValues(invalidJsonValues)) {
 				hasInvalidValues = false;
 			}
+		}
+		
+		if(!builderModified.toString().contains(",")){
+			throw new JsonSyntaxException("Error: JSON doesn't have fields separated by commas.");
 		}
 		
 		return builderModified;
@@ -237,9 +245,13 @@ public class CustomJSONFormatter {
 		StringBuilder sbReplace = new StringBuilder(previousField);
 		int lastIndexOf = previousField.length();
 		
-		if(sbReplace.lastIndexOf("\"") == lastIndexOf-1) {
-			sbReplace = sbReplace.deleteCharAt(lastIndexOf-1);
-			sbReplace.insert(lastIndexOf-1, ";");
+		try {
+			if(sbReplace.lastIndexOf("\"") == lastIndexOf-1) {
+				sbReplace = sbReplace.deleteCharAt(lastIndexOf-1);
+				sbReplace.insert(lastIndexOf-1, ";");
+			}
+		}catch(StringIndexOutOfBoundsException exception){
+			throw new StringIndexOutOfBoundsException("String is an empty object or has an invalid structure (key without value or vice-versa): " + str);
 		}
 		
 		if(str.contains("}")){

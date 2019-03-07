@@ -3,7 +3,6 @@ package io.github.mariazevedo88.jsonformattervalidator;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
-
 import com.google.gson.JsonObject;
 
 import io.github.mariazevedo88.jsonformattervalidator.formatter.CustomJSONFormatter;
@@ -22,6 +21,7 @@ public class JsonFormatterValidatorApplication {
 	private static JsonObject json;
 
 	public static void main(String[] args) throws IOException{
+		
 		logger.info("Started Json Formatter Validator Aplication");
 		
 		CustomJSONFormatter formatter = new CustomJSONFormatter();
