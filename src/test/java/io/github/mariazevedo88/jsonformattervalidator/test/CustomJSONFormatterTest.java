@@ -1,5 +1,6 @@
 package io.github.mariazevedo88.jsonformattervalidator.test;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -19,6 +20,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
@@ -200,6 +202,37 @@ public class CustomJSONFormatterTest{
 			BufferedReader reader = new BufferedReader(new FileReader(file));
 			formatter.checkValidityAndFormatObject(reader);
 	    });
+	}
+	
+	@Test
+	@DisplayName("Get a JSON Array From Empty Object as a String")
+	@Order(18)
+	public void getJSONArrayFromEmptyObjectAsString() throws IOException {
+		assertThrows(StringIndexOutOfBoundsException.class,()->{
+			formatter.checkValidityAndFormatObject("[]");
+	    });
+	}
+	
+	@Test
+	@DisplayName("Verify if the String as a JSON Array is a JSON Object")
+	@Order(19)
+	public void verifyIfJSONArrayIsJSONObject() throws IOException {
+		String jsonWithDotBeforeComma = "{paymentMethods:[{sequential:1,id:CREDIT_CARD,value:169.89,installments:2}]}";
+		JsonObject json = formatter.checkValidityAndFormatObject(jsonWithDotBeforeComma);
+		
+		JsonElement jsonElement = json.get("paymentMethods");
+		assertFalse(jsonElement.isJsonObject());
+	}
+	
+	@Test
+	@DisplayName("Verify if JSON Object has a valid value")
+	@Order(20)
+	public void verifyIfJSONObjectHasValidValue() throws IOException {
+		String jsonWithDotBeforeComma = "{id:1234567890, productCode:02-671806364}";
+		JsonObject json = formatter.checkValidityAndFormatObject(jsonWithDotBeforeComma);
+		
+		JsonElement jsonElement = json.get("id");
+		assertTrue(jsonElement.isJsonPrimitive()); //JsonPrimitive = primitive types and Java types
 	}
 	
 	@AfterAll

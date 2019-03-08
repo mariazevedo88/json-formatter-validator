@@ -55,6 +55,6 @@ You must import .jar into the classpath of your project. If your project is a ma
 <dependency>
   <groupId>io.github.mariazevedo88</groupId>
   <artifactId>json-formatter-validator</artifactId>
-  <version>1.1.6</version>
+  <version>1.1.7</version>
 </dependency>
 ```

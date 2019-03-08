@@ -20,8 +20,10 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.MalformedJsonException;
 
+import io.github.mariazevedo88.jsonformattervalidator.enumeration.DelimitersEnum;
+
 /**
- * Class that verify a json and format in cases of invalid json
+ * Class that verify a JSON and format in cases of invalid JSON
  * 
  * @author Mariana Azevedo
  * @since 10/02/2019
@@ -33,7 +35,7 @@ public class CustomJSONFormatter {
 	private JsonObject validJson;
 	
 	/**
-	 * Method that verify in a object is a valid or invalid json.
+	 * Method that verify in a object is a valid or invalid JSON.
 	 * 
 	 * @author Mariana Azevedo
 	 * @since 10/02/2019
@@ -60,7 +62,7 @@ public class CustomJSONFormatter {
 	}
 	
 	/**
-	 * Method that parses a json object.
+	 * Method that parses a JSON object.
 	 * 
 	 * @author Mariana Azevedo
 	 * @since 10/02/2019
@@ -84,7 +86,7 @@ public class CustomJSONFormatter {
 	}
 	
 	/**
-	 * Method to convert a invalid json, add double quotes where is needed. Based on the answers of this question:
+	 * Method to convert a invalid JSON, add double quotes where is needed. Based on the answers of this question:
 	 * https://stackoverflow.com/questions/54584696/how-add-quotes-in-a-json-string-using-java-when-the-value-is-a-date
 	 * 
 	 * (?<=: ?): there’s a colon an optionally a blank before the value (lookbehind)
@@ -122,7 +124,7 @@ public class CustomJSONFormatter {
 	 * @return
 	 */
 	private static String fixFieldsWithSimpleQuotes(String invalidJson) {
-		return invalidJson.replaceAll("''", "");
+		return invalidJson.replaceAll(DelimitersEnum.QUOTES.getValue(), DelimitersEnum.EMPTY_STRING.getValue());
 	}
 
 	/**
@@ -149,7 +151,8 @@ public class CustomJSONFormatter {
 	 * @return
 	 */
 	private static String replaceControlDelimiters(StringBuilder builderModified) {
-		return builderModified.toString().replaceAll(";", ",");
+		return builderModified.toString().replaceAll(DelimitersEnum.SEMICOLON.getValue(), 
+				DelimitersEnum.COMMA.getValue());
 	}
 
 	/**
@@ -163,7 +166,7 @@ public class CustomJSONFormatter {
 	 */
 	private static StringBuilder fixFieldsWithCommasWronglyModified(StringBuilder builderModified){
 		
-		String [] invalidJsonValues = builderModified.toString().split(",");
+		String [] invalidJsonValues = builderModified.toString().split(DelimitersEnum.COMMA.getValue());
 		boolean hasInvalidValues = true;
 		
 		while(hasInvalidValues) {
@@ -173,14 +176,14 @@ public class CustomJSONFormatter {
 				throw new JsonParseException("Error: JSON with more invalid characters than commas and quotes on keys and values.");
 			}
 
-			invalidJsonValues = builderModified.toString().split(",");
+			invalidJsonValues = builderModified.toString().split(DelimitersEnum.COMMA.getValue());
 			
 			if(!isStringHasInvalidJsonValues(invalidJsonValues)) {
 				hasInvalidValues = false;
 			}
 		}
 		
-		if(!builderModified.toString().contains(",")){
+		if(!builderModified.toString().contains(DelimitersEnum.COMMA.getValue())){
 			throw new JsonSyntaxException("Error: JSON doesn't have fields separated by commas.");
 		}
 		
@@ -197,7 +200,7 @@ public class CustomJSONFormatter {
 	 */
 	private static boolean isStringHasInvalidJsonValues(String [] invalidJsonValues) {
 		Set<String> collection = Arrays.stream(invalidJsonValues).collect(Collectors.toSet());
-		return collection.stream().anyMatch(str -> !str.contains(":"));
+		return collection.stream().anyMatch(str -> !str.contains(DelimitersEnum.COLON.getValue()));
 	}
 	
 	/**
@@ -212,11 +215,11 @@ public class CustomJSONFormatter {
 	private static StringBuilder cleanInvalidJsonValues(String[] invalidJsonValues, StringBuilder builder) {
 		
 		StringBuilder builderModified = new StringBuilder(builder);
-		String previousField = "";
+		String previousField = DelimitersEnum.EMPTY_STRING.getValue();
 		
 		List<String> collection = Arrays.stream(invalidJsonValues).collect(Collectors.toList());
 		for(String str : collection) {
-			if(str.contains(":")) {
+			if(str.contains(DelimitersEnum.COLON.getValue())) {
 				previousField = str;
 			}else{
 				if(!str.isEmpty()) {
@@ -246,26 +249,26 @@ public class CustomJSONFormatter {
 		int lastIndexOf = previousField.length();
 		
 		try {
-			if(sbReplace.lastIndexOf("\"") == lastIndexOf-1) {
+			if(sbReplace.lastIndexOf(DelimitersEnum.RIGHT_DOUBLE_QUOTE_WITH_ESCAPE.getValue()) == lastIndexOf-1) {
 				sbReplace = sbReplace.deleteCharAt(lastIndexOf-1);
-				sbReplace.insert(lastIndexOf-1, ";");
+				sbReplace.insert(lastIndexOf-1, DelimitersEnum.SEMICOLON.getValue());
 			}
 		}catch(StringIndexOutOfBoundsException exception){
 			throw new StringIndexOutOfBoundsException("String is an empty object or has an invalid structure (key without value or vice-versa): " + str);
 		}
 		
-		if(str.contains("}")){
+		if(str.contains(DelimitersEnum.RIGHT_KEY.getValue())){
 			//If the field that has commas in the middle, but is at the end of the object, 
 			//treat so that the quotes are in the right place
 			int lastIndexOfStr = str.length();
 			String strModified = new StringBuilder(str).deleteCharAt(lastIndexOfStr-1).toString(); 
-			sbReplace.append(strModified).append("\"}");
+			sbReplace.append(strModified).append(DelimitersEnum.RIGHT_KEY_WITH_ESCAPE.getValue());
 		}else{
-			sbReplace.append(str).append("\"");
+			sbReplace.append(str).append(DelimitersEnum.RIGHT_DOUBLE_QUOTE_WITH_ESCAPE.getValue());
 		}
 		
 		Pattern pattern = Pattern.compile(str, Pattern.LITERAL);
-		replaceStringBasedOnAPattern(builderModified, pattern, "");
+		replaceStringBasedOnAPattern(builderModified, pattern, DelimitersEnum.EMPTY_STRING.getValue());
 		
 		try {
 			pattern = Pattern.compile(previousField);
@@ -274,8 +277,8 @@ public class CustomJSONFormatter {
 			splitPatternToNearowTheSearch(builderModified, previousField, sbReplace);
 		}
 		
-		pattern = Pattern.compile(",,");
-		replaceStringBasedOnAPattern(builderModified, pattern, ",");
+		pattern = Pattern.compile(DelimitersEnum.DOUBLE_COMMA.getValue());
+		replaceStringBasedOnAPattern(builderModified, pattern, DelimitersEnum.COMMA.getValue());
 	}
 
 	/**
@@ -291,8 +294,8 @@ public class CustomJSONFormatter {
 	private static void splitPatternToNearowTheSearch(StringBuilder builderModified, String previousField,
 			StringBuilder sbReplace) {
 		
-		String[] patternSplit = previousField.split(":");
-		String[] sbReplaceToSplit = sbReplace.toString().split(":");
+		String[] patternSplit = previousField.split(DelimitersEnum.COLON.getValue());
+		String[] sbReplaceToSplit = sbReplace.toString().split(DelimitersEnum.COLON.getValue());
 		
 		Pattern pattern = Pattern.compile(patternSplit[patternSplit.length-1]);
 		replaceStringBasedOnAPattern(builderModified, pattern, sbReplaceToSplit[sbReplaceToSplit.length-1]);
@@ -318,7 +321,7 @@ public class CustomJSONFormatter {
 	}
 	
 	/**
-	 * Method that checks json validity and format if needed.
+	 * Method that checks JSON validity and format if needed.
 	 * 
 	 * @author Mariana Azevedo
 	 * @since 17/02/2019
@@ -356,7 +359,7 @@ public class CustomJSONFormatter {
 	}
 	
 	/**
-	 * Method that return a valid json
+	 * Method that return a valid JSON
 	 * 
 	 * @author Mariana Azevedo
 	 * @since 10/02/2019
