@@ -1,4 +1,4 @@
-package io.github.mariazevedo88.jsonformattervalidator.formatter;
+package io.github.mariazevedo88.jfv.formatter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,7 +20,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.MalformedJsonException;
 
-import io.github.mariazevedo88.jsonformattervalidator.enumeration.DelimitersEnum;
+import io.github.mariazevedo88.jfv.enumeration.DelimitersEnum;
 
 /**
  * Class that verify a JSON and format in cases of invalid JSON

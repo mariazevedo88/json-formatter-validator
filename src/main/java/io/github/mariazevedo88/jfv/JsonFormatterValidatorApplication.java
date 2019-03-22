@@ -1,11 +1,11 @@
-package io.github.mariazevedo88.jsonformattervalidator;
+package io.github.mariazevedo88.jfv;
 
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
 import com.google.gson.JsonObject;
 
-import io.github.mariazevedo88.jsonformattervalidator.formatter.CustomJSONFormatter;
+import io.github.mariazevedo88.jfv.formatter.CustomJSONFormatter;
 
 /**
  * Application's main class 

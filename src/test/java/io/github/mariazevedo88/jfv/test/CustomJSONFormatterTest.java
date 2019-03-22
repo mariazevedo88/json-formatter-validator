@@ -1,4 +1,4 @@
-package io.github.mariazevedo88.jsonformattervalidator.test;
+package io.github.mariazevedo88.jfv.test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -25,8 +25,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
 
-import io.github.mariazevedo88.jsonformattervalidator.JsonFormatterValidatorApplication;
-import io.github.mariazevedo88.jsonformattervalidator.formatter.CustomJSONFormatter;
+import io.github.mariazevedo88.jfv.JsonFormatterValidatorApplication;
+import io.github.mariazevedo88.jfv.formatter.CustomJSONFormatter;
 
 /**
  * CustomJSONFormatter test class

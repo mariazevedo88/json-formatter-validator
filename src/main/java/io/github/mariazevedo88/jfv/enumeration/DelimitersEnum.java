@@ -1,4 +1,4 @@
-package io.github.mariazevedo88.jsonformattervalidator.enumeration;
+package io.github.mariazevedo88.jfv.enumeration;
 
 public enum DelimitersEnum {
 	
