@@ -265,7 +265,7 @@ public class CustomJSONFormatterTest{
 	@Test
 	@DisplayName("Get a JSON Object from String with colon wrongly placed")
 	@Order(24)
-	public void getJSONObject() throws IOException {
+	public void getJSONObjectWithColonWronglyPlaced() throws IOException {
 		String jsonWithColonWronglyPlaced = "{id:268856993701,productCode:02-688569937,purchaseDate:2019-02-02,address:{street:Rua Pachecao,number:2019,additionalInfo:casa FRENTE. 21965307587,reference:depois do ponto de onibus 666, no seguno numero. Procurar fulano  TELE: 35 981149567 .,neighborhood:Jardim Floresta,city:Lavras,state:MG,zipcode:37200000}}";
 		JsonObject json = formatter.checkValidityAndFormatObject(jsonWithColonWronglyPlaced);
 		assertTrue(json.isJsonObject());
