@@ -102,7 +102,10 @@ public class CustomJSONFormatter {
 	 * @throws MalformedJsonException 
 	 */
 	private static String getInvalidJsonToFormat(String invalidJson) {
+		
+		invalidJson = fixMalformatedFields(invalidJson); //format malformated fields before apply the main regex
 		invalidJson = fixEmptyFields(invalidJson); //format empty fields before apply the main regex
+		
 		invalidJson = invalidJson.replaceAll("(?<=\\{|, ?)([a-zA-Z]+?): ?(?![\\{\\[])(.+?)(?=,|})", "\"$1\": \"$2\"");
 		invalidJson = fixFieldsWithSimpleQuotes(invalidJson);
 		
@@ -110,7 +113,6 @@ public class CustomJSONFormatter {
 		
 		builderModified = fixFieldsWithCommasWronglyModified(builderModified);
 		invalidJson = replaceControlDelimiters(builderModified);
-		
 		
 		return invalidJson;
 	}
@@ -126,6 +128,24 @@ public class CustomJSONFormatter {
 	private static String fixFieldsWithSimpleQuotes(String invalidJson) {
 		return invalidJson.replaceAll(DelimitersEnum.QUOTES.getValue(), DelimitersEnum.EMPTY_STRING.getValue());
 	}
+	
+	/**
+	 * Method to fix malformated values before apply the main regex
+	 * 
+	 * @author Mariana Azevedo
+	 * @since 02/04/2019
+	 * @param invalidJson
+	 * @return
+	 */
+	private static String fixMalformatedFields(String invalidJson) {
+		invalidJson = invalidJson.replaceAll("\\s+,,", ","); //correcting double commas with space
+		invalidJson = invalidJson.replaceAll("(\\d+)\\,(\\d+)", "$1.$2"); //correcting decimal numbers with comma
+		invalidJson = invalidJson.replaceAll("(\\d+)\\:(\\d+)", "$1;;$2"); //correcting hours in the HH:mm format
+		invalidJson = invalidJson.replaceAll("(\\()", ";"); //correcting left parentheses wrongly placed
+		invalidJson = invalidJson.replaceAll("(\\))", ";"); //correcting right parentheses wrongly placed
+		invalidJson = invalidJson.replaceAll("[A-Z]+:", ""); //removing colon wrongly placed
+		return invalidJson;
+	}
 
 	/**
 	 * Method to fix json keys with empty values before apply the main regex
@@ -138,7 +158,7 @@ public class CustomJSONFormatter {
 	private static String fixEmptyFields(String invalidJson) {
 		invalidJson = invalidJson.replaceAll("(:,)", ":\'\',");
 		invalidJson = invalidJson.replaceAll("(:})", ": \'\'}");
-		invalidJson = invalidJson.replaceAll("(,,)", ":\'\',");
+		invalidJson = invalidJson.replaceAll("(,,)", "\'\',");
 		return invalidJson;
 	}
 
@@ -151,10 +171,12 @@ public class CustomJSONFormatter {
 	 * @return
 	 */
 	private static String replaceControlDelimiters(StringBuilder builderModified) {
-		return builderModified.toString().replaceAll(DelimitersEnum.SEMICOLON.getValue(), 
-				DelimitersEnum.COMMA.getValue());
+		String finalString = builderModified.toString().replaceAll(DelimitersEnum.DOUBLE_SEMICOLON.getValue(), DelimitersEnum.COLON.getValue());
+		finalString = finalString.replaceAll(DelimitersEnum.SEMICOLON.getValue(), DelimitersEnum.COMMA.getValue());
+		
+		return finalString;
 	}
-
+	
 	/**
 	 * Method that fix invalid fields wrongly converted by the regex of getInvalidJsonToFormat() method.
 	 * 

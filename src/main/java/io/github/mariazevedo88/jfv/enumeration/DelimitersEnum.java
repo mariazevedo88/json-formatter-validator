@@ -10,6 +10,7 @@ public enum DelimitersEnum {
 	RIGHT_KEY("}"),
 	RIGHT_KEY_WITH_ESCAPE("\"}"),
 	SEMICOLON(";"),
+	DOUBLE_SEMICOLON(";;"),
 	QUOTES("''");
 	
 	private String value;
