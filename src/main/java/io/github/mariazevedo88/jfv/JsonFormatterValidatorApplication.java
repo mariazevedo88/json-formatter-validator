@@ -27,7 +27,7 @@ public class JsonFormatterValidatorApplication {
 		CustomJSONFormatter formatter = new CustomJSONFormatter();
 		
 		for(String arg : args) {
-			json = formatter.checkValidityAndFormatObject(arg, false);
+			json = formatter.checkValidityAndFormatObject(arg, false, false);
 		}
 	}
 

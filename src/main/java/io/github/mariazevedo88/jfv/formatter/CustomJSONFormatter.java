@@ -17,6 +17,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
 import io.github.mariazevedo88.jfv.enumeration.DelimitersEnum;
 
@@ -71,13 +72,22 @@ public class CustomJSONFormatter {
 	 * @since 10/02/2019
 	 * 
 	 * @param json
+	 * @param muteException
 	 */
-	private void parseJSONObject(Object json) {
+	private void parseJSONObject(Object json, boolean muteException) {
 		
 		JsonElement res = null;
 		
 		if(json instanceof String){
-			res = new JsonParser().parse((String)json);
+			try {
+				res = new JsonParser().parse((String)json);
+			}catch(JsonSyntaxException e) {
+				if(!muteException) {
+					throw new JsonSyntaxException("Error: JSON with more invalid characters than commas and quotes on keys and values.");
+				}else {
+					this.validJson = null;
+				}
+			}
 		}
 		
 		if(json instanceof BufferedReader){
@@ -367,7 +377,7 @@ public class CustomJSONFormatter {
 	 * @return
 	 * @throws IOException
 	 */
-	public JsonObject checkValidityAndFormatObject(Object json, boolean muteLog) throws IOException {
+	public JsonObject checkValidityAndFormatObject(Object json, boolean muteLog, boolean muteException) throws IOException {
 		
 		String jsonToTest = null;
 		BufferedReader reader = null;
@@ -384,15 +394,18 @@ public class CustomJSONFormatter {
 		if(!isValidJson(json, muteLog)) {
 			jsonToTest = getInvalidJsonToFormat(json.toString());
 			if(reader == null){
-				parseJSONObject(jsonToTest);
+				parseJSONObject(jsonToTest, muteException);
 			}else{
-				parseJSONObject(reader);
+				parseJSONObject(reader, muteException);
 				reader.close();
 			}
 		}
 		
-		if(!muteLog) {
+		if(!muteLog && this.validJson != null) {
 			logger.info("Valid json: " + this.validJson);
+		}else {
+			if(muteException) 
+				logger.warn("JsonParseException: JSON with more invalid characters than commas and quotes on keys and values.");
 		}
 		
 		return validJson;
