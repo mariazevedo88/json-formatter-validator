@@ -17,8 +17,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.MalformedJsonException;
 
 import io.github.mariazevedo88.jfv.enumeration.DelimitersEnum;
 
@@ -35,14 +33,16 @@ public class CustomJSONFormatter {
 	private JsonObject validJson;
 	
 	/**
-	 * Method that verify in a object is a valid or invalid JSON.
+	 * Method that verify in a object is a valid or invalid JSON
 	 * 
 	 * @author Mariana Azevedo
 	 * @since 10/02/2019
+	 * 
 	 * @param json
+	 * @param muteLog
 	 * @return
 	 */
-	private boolean isValidJson(Object json){
+	private boolean isValidJson(Object json, boolean muteLog){
 		
 		if(json instanceof BufferedReader){
 			JsonElement res = new JsonParser().parse((BufferedReader)json);
@@ -57,15 +57,19 @@ public class CustomJSONFormatter {
 			return true;
 		}
 			
-	    logger.info("Invalid json: " + json.toString());
+		if(!muteLog) {
+			logger.info("Invalid json: " + json.toString());
+		}
+		
         return false;
 	}
 	
 	/**
-	 * Method that parses a JSON object.
+	 * Method that parses a JSON object
 	 * 
 	 * @author Mariana Azevedo
 	 * @since 10/02/2019
+	 * 
 	 * @param json
 	 */
 	private void parseJSONObject(Object json) {
@@ -97,9 +101,9 @@ public class CustomJSONFormatter {
      * 
 	 * @author Mariana Azevedo
 	 * @since 10/02/2019
+	 * 
 	 * @param invalidJson
 	 * @return
-	 * @throws MalformedJsonException 
 	 */
 	private static String getInvalidJsonToFormat(String invalidJson) {
 		
@@ -122,6 +126,7 @@ public class CustomJSONFormatter {
 	 * 
 	 * @author Mariana Azevedo
 	 * @since 28/02/2019
+	 * 
 	 * @param invalidJson
 	 * @return
 	 */
@@ -134,16 +139,19 @@ public class CustomJSONFormatter {
 	 * 
 	 * @author Mariana Azevedo
 	 * @since 02/04/2019
+	 * 
 	 * @param invalidJson
 	 * @return
 	 */
 	private static String fixMalformatedFields(String invalidJson) {
+		
 		invalidJson = invalidJson.replaceAll("\\s+,,", ","); //correcting double commas with space
 		invalidJson = invalidJson.replaceAll("(\\d+)\\,(\\d+)", "$1.$2"); //correcting decimal numbers with comma
 		invalidJson = invalidJson.replaceAll("(\\d+)\\:(\\d+)", "$1;;$2"); //correcting hours in the HH:mm format
 		invalidJson = invalidJson.replaceAll("(\\()", ";"); //correcting left parentheses wrongly placed
 		invalidJson = invalidJson.replaceAll("(\\))", ";"); //correcting right parentheses wrongly placed
 		invalidJson = invalidJson.replaceAll("[A-Z]+:", ""); //removing colon wrongly placed
+		
 		return invalidJson;
 	}
 
@@ -152,25 +160,31 @@ public class CustomJSONFormatter {
 	 * 
 	 * @author Mariana Azevedo
 	 * @since 28/02/2019
+	 * 
 	 * @param invalidJson
 	 * @return
 	 */
 	private static String fixEmptyFields(String invalidJson) {
+		
 		invalidJson = invalidJson.replaceAll("(:,)", ":\'\',");
 		invalidJson = invalidJson.replaceAll("(:})", ": \'\'}");
 		invalidJson = invalidJson.replaceAll("(,,)", "\'\',");
+		invalidJson = invalidJson.replaceAll("(,})", "}");
+		
 		return invalidJson;
 	}
 
 	/**
-	 * Method that replaces some control delimiters in the fix routine on fields with wrong commas.
+	 * Method that replaces some control delimiters in the fix routine on fields with wrong commas
 	 * 
 	 * @author Mariana Azevedo
 	 * @since 17/02/2019
+	 * 
 	 * @param builderModified
 	 * @return
 	 */
 	private static String replaceControlDelimiters(StringBuilder builderModified) {
+		
 		String finalString = builderModified.toString().replaceAll(DelimitersEnum.DOUBLE_SEMICOLON.getValue(), DelimitersEnum.COLON.getValue());
 		finalString = finalString.replaceAll(DelimitersEnum.SEMICOLON.getValue(), DelimitersEnum.COMMA.getValue());
 		
@@ -178,13 +192,13 @@ public class CustomJSONFormatter {
 	}
 	
 	/**
-	 * Method that fix invalid fields wrongly converted by the regex of getInvalidJsonToFormat() method.
+	 * Method that fix invalid fields wrongly converted by the regex of getInvalidJsonToFormat() method
 	 * 
 	 * @author Mariana Azevedo
 	 * @since 17/02/2019
+	 * 
 	 * @param builderModified
 	 * @return
-	 * @throws MalformedJsonException 
 	 */
 	private static StringBuilder fixFieldsWithCommasWronglyModified(StringBuilder builderModified){
 		
@@ -205,10 +219,6 @@ public class CustomJSONFormatter {
 			}
 		}
 		
-		if(!builderModified.toString().contains(DelimitersEnum.COMMA.getValue())){
-			throw new JsonSyntaxException("Error: JSON doesn't have fields separated by commas.");
-		}
-		
 		return builderModified;
 	}
 	
@@ -217,6 +227,7 @@ public class CustomJSONFormatter {
 	 * 
 	 * @author Mariana Azevedo
 	 * @since 17/02/2019
+	 * 
 	 * @param invalidJsonValues
 	 * @return
 	 */
@@ -230,6 +241,7 @@ public class CustomJSONFormatter {
 	 * 
 	 * @author Mariana Azevedo
 	 * @since 17/02/2019
+	 * 
 	 * @param invalidJsonValues
 	 * @param builder
 	 * @return
@@ -261,6 +273,7 @@ public class CustomJSONFormatter {
 	 * 
 	 * @author Mariana Azevedo
 	 * @since 17/02/2019
+	 * 
 	 * @param builderModified
 	 * @param previousField
 	 * @param str
@@ -329,6 +342,7 @@ public class CustomJSONFormatter {
 	 * 
 	 * @author Mariana Azevedo
 	 * @since 17/02/2019
+	 * 
 	 * @param builderModified
 	 * @param pattern
 	 * @param replacement
@@ -347,11 +361,13 @@ public class CustomJSONFormatter {
 	 * 
 	 * @author Mariana Azevedo
 	 * @since 17/02/2019
+	 * 
 	 * @param json
+	 * @param muteLog
 	 * @return
 	 * @throws IOException
 	 */
-	public JsonObject checkValidityAndFormatObject(Object json) throws IOException {
+	public JsonObject checkValidityAndFormatObject(Object json, boolean muteLog) throws IOException {
 		
 		String jsonToTest = null;
 		BufferedReader reader = null;
@@ -365,7 +381,7 @@ public class CustomJSONFormatter {
 			throw new NullPointerException("Object to validated is null.");
 		}
 		
-		if(!isValidJson(json)) {
+		if(!isValidJson(json, muteLog)) {
 			jsonToTest = getInvalidJsonToFormat(json.toString());
 			if(reader == null){
 				parseJSONObject(jsonToTest);
@@ -375,9 +391,174 @@ public class CustomJSONFormatter {
 			}
 		}
 		
-		logger.info("Valid json: " + this.validJson);
+		if(!muteLog) {
+			logger.info("Valid json: " + this.validJson);
+		}
 		
 		return validJson;
+	}
+	
+	/**
+	 * Method that remove a json object/json array pattern from the string
+	 * 
+	 * @author Mariana Azevedo
+	 * @since 12/04/2019
+	 * 
+	 * @param invalidJson
+	 * @param jsonObjectPattern
+	 * @return
+	 */
+	private String removeJSONObjectFromString(String invalidJson, String jsonObjectPattern) {
+		
+		StringBuilder builderModified = new StringBuilder(invalidJson);
+		int lastIndexOf = builderModified.indexOf(jsonObjectPattern) + jsonObjectPattern.length();
+		
+		int numberLeftKeys = 0;
+		int numberRightKeys = 0;
+		int numberLeftBrackets = 0;
+		int numberRightBrackets = 0;
+		
+		for (int i = lastIndexOf; i < builderModified.length(); i++) {
+			String next = builderModified.substring(i,i+1);
+			if(next.equals(DelimitersEnum.LEFT_KEY.getValue())) numberLeftKeys++;
+			
+			if(next.equals(DelimitersEnum.RIGHT_KEY.getValue())) numberRightKeys++;
+			
+			if(next.equals(DelimitersEnum.LEFT_BRACKETS.getValue())) numberLeftBrackets++;
+			
+			if(next.equals(DelimitersEnum.RIGHT_BRACKETS.getValue())) numberRightBrackets++;
+			
+			if((next.equals(DelimitersEnum.COMMA.getValue()) && hasEqualNumberOfKeysOrBrackets(numberLeftKeys, numberRightKeys) && hasEqualNumberOfKeysOrBrackets(numberLeftBrackets, numberRightBrackets))
+					|| (next.equals(DelimitersEnum.RIGHT_KEY.getValue()) && hasMoreRightKeys(numberLeftKeys, numberRightKeys))) {
+				if (next.equals(DelimitersEnum.COMMA.getValue())) jsonObjectPattern = jsonObjectPattern.concat(next);
+				break;
+			}
+			
+			jsonObjectPattern = jsonObjectPattern.concat(next);
+			
+		}
+
+		return builderModified.toString().replace(jsonObjectPattern, "");
+	}
+	
+	/**
+	 * Method that filter a json object/json array pattern from the string
+	 * 
+	 * @author Mariana Azevedo
+	 * @since 12/04/2019
+	 * 
+	 * @param invalidJson
+	 * @param jsonObjectPattern
+	 * @return
+	 */
+	private String filterJSONObjectFromString(String invalidJson, String jsonObjectPattern) {
+		
+		StringBuilder builderModified = new StringBuilder(invalidJson);
+		int lastIndexOf = builderModified.indexOf(jsonObjectPattern) + jsonObjectPattern.length();
+		
+		int numberLeftKeys = 0;
+		int numberRightKeys = 0;
+		int numberLeftBrackets = 0;
+		int numberRightBrackets = 0;
+		
+		for (int i = lastIndexOf; i < builderModified.length(); i++) {
+			
+			String next = builderModified.substring(i,i+1);
+
+			if(next.equals(DelimitersEnum.LEFT_KEY.getValue())) numberLeftKeys++;
+			
+			if(next.equals(DelimitersEnum.RIGHT_KEY.getValue())) numberRightKeys++;
+			
+			if(next.equals(DelimitersEnum.LEFT_BRACKETS.getValue())) numberLeftBrackets++;
+			
+			if(next.equals(DelimitersEnum.RIGHT_BRACKETS.getValue())) numberRightBrackets++;
+			
+			if((next.equals(DelimitersEnum.COMMA.getValue()) && hasEqualNumberOfKeysOrBrackets(numberLeftKeys, numberRightKeys) && hasEqualNumberOfKeysOrBrackets(numberLeftBrackets, numberRightBrackets))
+					|| (next.equals(DelimitersEnum.RIGHT_KEY.getValue()) && hasMoreRightKeys(numberLeftKeys, numberRightKeys))) {
+				if (next.equals(DelimitersEnum.COMMA.getValue())) jsonObjectPattern = jsonObjectPattern.concat(next);
+				break;
+			}
+			
+			jsonObjectPattern = jsonObjectPattern.concat(next);
+			
+		}
+
+		return new StringBuilder(jsonObjectPattern).toString();
+	}
+	
+	/**
+	 * Method that remove a list of json object/json array patterns from the string
+	 * 
+	 * @author Mariana Azevedo
+	 * @since 12/04/2019
+	 * 
+	 * @param invalidJson
+	 * @param jsonObjectPattern
+	 * @return
+	 */
+	public String removeJSONObjectsFromString(String invalidJson, String[] jsonObjectPattern) {
+		
+		String jsonModified = invalidJson;
+		
+		for(String attribute : jsonObjectPattern) {
+			jsonModified = removeJSONObjectFromString(jsonModified, attribute);
+		}
+		
+		return jsonModified;
+	}
+	
+	/**
+	 * Method that filter a list of json object/json array pattern from the string
+	 * 
+	 * @author Mariana Azevedo
+	 * @since 12/04/2019
+	 * 
+	 * @param invalidJson
+	 * @param jsonObjectPattern
+	 * @return
+	 */
+	public String filterJSONObjectsFromString(String invalidJson, String[] jsonObjectPattern) {
+		
+		String jsonModified = "";
+		
+		for(String attribute : jsonObjectPattern) {
+			String filterResult = filterJSONObjectFromString(invalidJson, attribute);
+			jsonModified = jsonModified.concat(filterResult).concat(DelimitersEnum.COMMA.getValue());
+		}
+		
+		if(!jsonModified.startsWith(DelimitersEnum.LEFT_KEY.getValue())) jsonModified = DelimitersEnum.LEFT_KEY.getValue().concat(jsonModified);
+		if(!jsonModified.endsWith(DelimitersEnum.RIGHT_KEY.getValue())) jsonModified = jsonModified.concat(DelimitersEnum.RIGHT_KEY.getValue());
+		
+		return jsonModified;
+	}
+
+	/**
+	 * Method that verifies with string has more right keys
+	 * 
+	 * @author Mariana Azevedo
+	 * @since 12/04/2019
+	 * 
+	 * @param numberLeftKeys
+	 * @param numberRightKeys
+	 * @return
+	 */
+	private boolean hasMoreRightKeys(int numberLeftKeys, int numberRightKeys) {
+		return numberLeftKeys < numberRightKeys;
+	}
+
+	/**
+	 * Method that verifies with string has an equal number of left and right keys
+	 * or left and right brackets
+	 * 
+	 * @author Mariana Azevedo
+	 * @since 12/04/2019
+	 * 
+	 * @param numberLeft
+	 * @param numberRight
+	 * @return
+	 */
+	private boolean hasEqualNumberOfKeysOrBrackets(int numberLeft, int numberRight) {
+		return numberLeft == numberRight;
 	}
 	
 	/**
@@ -385,6 +566,7 @@ public class CustomJSONFormatter {
 	 * 
 	 * @author Mariana Azevedo
 	 * @since 10/02/2019
+	 * 
 	 * @return
 	 */
 	public JsonObject getValidJson() {

@@ -11,7 +11,10 @@ public enum DelimitersEnum {
 	RIGHT_KEY_WITH_ESCAPE("\"}"),
 	SEMICOLON(";"),
 	DOUBLE_SEMICOLON(";;"),
-	QUOTES("''");
+	QUOTES("''"),
+	LEFT_KEY("{"),
+	LEFT_BRACKETS("["),
+	RIGHT_BRACKETS("]");
 	
 	private String value;
 	
