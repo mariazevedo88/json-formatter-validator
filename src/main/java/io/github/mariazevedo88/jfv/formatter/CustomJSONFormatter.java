@@ -115,7 +115,7 @@ public class CustomJSONFormatter {
 	 * @param invalidJson
 	 * @return
 	 */
-	private static String getInvalidJsonToFormat(String invalidJson) {
+	private static String getInvalidJsonToFormat(String invalidJson, boolean muteException) {
 		
 		invalidJson = fixMalformatedFields(invalidJson); //format malformated fields before apply the main regex
 		invalidJson = fixEmptyFields(invalidJson); //format empty fields before apply the main regex
@@ -125,7 +125,7 @@ public class CustomJSONFormatter {
 		
 		StringBuilder builderModified = new StringBuilder(invalidJson);
 		
-		builderModified = fixFieldsWithCommasWronglyModified(builderModified);
+		builderModified = fixFieldsWithCommasWronglyModified(builderModified, muteException);
 		invalidJson = replaceControlDelimiters(builderModified);
 		
 		return invalidJson;
@@ -210,15 +210,15 @@ public class CustomJSONFormatter {
 	 * @param builderModified
 	 * @return
 	 */
-	private static StringBuilder fixFieldsWithCommasWronglyModified(StringBuilder builderModified){
+	private static StringBuilder fixFieldsWithCommasWronglyModified(StringBuilder builderModified, boolean muteException){
 		
 		String [] invalidJsonValues = builderModified.toString().split(DelimitersEnum.COMMA.getValue());
 		boolean hasInvalidValues = true;
 		
 		while(hasInvalidValues) {
-			builderModified = cleanInvalidJsonValues(invalidJsonValues, builderModified);
+			builderModified = cleanInvalidJsonValues(invalidJsonValues, builderModified, muteException);
 			
-			if(builderModified.length() == 0) {
+			if(!muteException && builderModified.length() == 0) {
 				throw new JsonParseException("Error: JSON with more invalid characters than commas and quotes on keys and values.");
 			}
 
@@ -256,7 +256,7 @@ public class CustomJSONFormatter {
 	 * @param builder
 	 * @return
 	 */
-	private static StringBuilder cleanInvalidJsonValues(String[] invalidJsonValues, StringBuilder builder) {
+	private static StringBuilder cleanInvalidJsonValues(String[] invalidJsonValues, StringBuilder builder, boolean muteException) {
 		
 		StringBuilder builderModified = new StringBuilder(builder);
 		String previousField = DelimitersEnum.EMPTY_STRING.getValue();
@@ -267,7 +267,7 @@ public class CustomJSONFormatter {
 				previousField = str;
 			}else{
 				if(!str.isEmpty()) {
-					cleanWrongQuotesOnFields(builderModified, previousField, str);
+					cleanWrongQuotesOnFields(builderModified, previousField, str, muteException);
 					break;
 				}
 			}
@@ -288,7 +288,7 @@ public class CustomJSONFormatter {
 	 * @param previousField
 	 * @param str
 	 */
-	private static void cleanWrongQuotesOnFields(StringBuilder builderModified, String previousField, String str) {
+	private static void cleanWrongQuotesOnFields(StringBuilder builderModified, String previousField, String str, boolean muteException) {
 		
 		StringBuilder sbReplace = new StringBuilder(previousField);
 		int lastIndexOf = previousField.length();
@@ -299,7 +299,11 @@ public class CustomJSONFormatter {
 				sbReplace.insert(lastIndexOf-1, DelimitersEnum.SEMICOLON.getValue());
 			}
 		}catch(StringIndexOutOfBoundsException exception){
-			throw new StringIndexOutOfBoundsException("String is an empty object or has an invalid structure (key without value or vice-versa): " + str);
+			if(!muteException) {
+				throw new StringIndexOutOfBoundsException("String is an empty object or has an invalid structure (key without value or vice-versa): " + str);
+			}else {
+				return;
+			}
 		}
 		
 		if(str.contains(DelimitersEnum.RIGHT_KEY.getValue())){
@@ -387,12 +391,15 @@ public class CustomJSONFormatter {
 		}
 		
 		if(json == null) {
-			this.validJson = null;
-			throw new NullPointerException("Object to validated is null.");
+			if(!muteException) {
+				throw new NullPointerException("Object to validated is null.");
+			}else {
+				return validJson;
+			}
 		}
 		
 		if(!isValidJson(json, muteLog)) {
-			jsonToTest = getInvalidJsonToFormat(json.toString());
+			jsonToTest = getInvalidJsonToFormat(json.toString(), muteException);
 			if(reader == null){
 				parseJSONObject(jsonToTest, muteException);
 			}else{
@@ -404,7 +411,7 @@ public class CustomJSONFormatter {
 		if(!muteLog && this.validJson != null) {
 			logger.info("Valid json: " + this.validJson);
 		}else {
-			if(muteException) 
+			if(!muteLog) 
 				logger.warn("JsonParseException: JSON with more invalid characters than commas and quotes on keys and values.");
 		}
 		
