@@ -439,28 +439,27 @@ public class CustomJSONFormatter {
 		int numberRightBrackets = 0;
 		
 		for (int i = lastIndexOf; i < builderModified.length(); i++) {
+			
 			String next = builderModified.substring(i,i+1);
-			if(next.equals(DelimitersEnum.LEFT_KEY.getValue())) numberLeftKeys++;
 			
-			if(next.equals(DelimitersEnum.RIGHT_KEY.getValue())) numberRightKeys++;
+			numberLeftKeys = checkNumberOfLeftKeys(numberLeftKeys, next);
+			numberRightKeys = checkIfExpressionisARightKey(numberRightKeys, next);
+			numberLeftBrackets = checkIfExpressionIsALeftBracket(numberLeftBrackets, next);
+			numberRightBrackets = checkIfExpressionIsARightBracket(numberRightBrackets, next);
 			
-			if(next.equals(DelimitersEnum.LEFT_BRACKETS.getValue())) numberLeftBrackets++;
-			
-			if(next.equals(DelimitersEnum.RIGHT_BRACKETS.getValue())) numberRightBrackets++;
-			
-			if((next.equals(DelimitersEnum.COMMA.getValue()) && hasEqualNumberOfKeysOrBrackets(numberLeftKeys, numberRightKeys) && hasEqualNumberOfKeysOrBrackets(numberLeftBrackets, numberRightBrackets))
-					|| (next.equals(DelimitersEnum.RIGHT_KEY.getValue()) && hasMoreRightKeys(numberLeftKeys, numberRightKeys))) {
+			if(checkIfJsonHasEqualNumberExpressionsBeforeComma(numberLeftKeys, numberRightKeys, numberLeftBrackets, 
+					numberRightBrackets, next) || checkIfLastKeyIsARightKey(numberLeftKeys, numberRightKeys, next)) {
+				
 				if (next.equals(DelimitersEnum.COMMA.getValue())) jsonObjectPattern = jsonObjectPattern.concat(next);
 				break;
 			}
 			
 			jsonObjectPattern = jsonObjectPattern.concat(next);
-			
 		}
 
 		return builderModified.toString().replace(jsonObjectPattern, "");
 	}
-	
+
 	/**
 	 * Method that filter a json object/json array pattern from the string
 	 * 
@@ -485,16 +484,14 @@ public class CustomJSONFormatter {
 			
 			String next = builderModified.substring(i,i+1);
 
-			if(next.equals(DelimitersEnum.LEFT_KEY.getValue())) numberLeftKeys++;
+			numberLeftKeys = checkNumberOfLeftKeys(numberLeftKeys, next);
+			numberRightKeys = checkIfExpressionisARightKey(numberRightKeys, next);
+			numberLeftBrackets = checkIfExpressionIsALeftBracket(numberLeftBrackets, next);
+			numberRightBrackets = checkIfExpressionIsARightBracket(numberRightBrackets, next);
 			
-			if(next.equals(DelimitersEnum.RIGHT_KEY.getValue())) numberRightKeys++;
-			
-			if(next.equals(DelimitersEnum.LEFT_BRACKETS.getValue())) numberLeftBrackets++;
-			
-			if(next.equals(DelimitersEnum.RIGHT_BRACKETS.getValue())) numberRightBrackets++;
-			
-			if((next.equals(DelimitersEnum.COMMA.getValue()) && hasEqualNumberOfKeysOrBrackets(numberLeftKeys, numberRightKeys) && hasEqualNumberOfKeysOrBrackets(numberLeftBrackets, numberRightBrackets))
-					|| (next.equals(DelimitersEnum.RIGHT_KEY.getValue()) && hasMoreRightKeys(numberLeftKeys, numberRightKeys))) {
+			if(checkIfJsonHasEqualNumberExpressionsBeforeComma(numberLeftKeys, numberRightKeys, numberLeftBrackets,
+					numberRightBrackets, next) || checkIfLastKeyIsARightKey(numberLeftKeys, numberRightKeys, next)) {
+				
 				if (next.equals(DelimitersEnum.COMMA.getValue())) jsonObjectPattern = jsonObjectPattern.concat(next);
 				break;
 			}
@@ -504,6 +501,103 @@ public class CustomJSONFormatter {
 		}
 
 		return new StringBuilder(jsonObjectPattern).toString();
+	}
+	
+	/**
+	 * Method that checks if the last character of json is a right key and if the 
+	 * expression has more right keys than left keys.
+	 * 
+	 * @author Mariana Azevedo
+	 * @since 27/05/2019
+	 *  
+	 * @param numberLeftKeys
+	 * @param numberRightKeys
+	 * @param next
+	 * @return
+	 */
+	private boolean checkIfLastKeyIsARightKey(int numberLeftKeys, int numberRightKeys, String next) {
+		return next.equals(DelimitersEnum.RIGHT_KEY.getValue()) && hasMoreRightKeys(numberLeftKeys, numberRightKeys);
+	}
+
+	/**
+	 * Method that checks if the json has a equal number of right keys and left keys or left brackets and right brackets,
+	 * before a comma. If the test is true, it means that the analysis has reached the end of the original string.
+	 * 
+	 * @author Mariana Azevedo
+	 * @since 27/05/2019
+	 * 
+	 * @param numberLeftKeys
+	 * @param numberRightKeys
+	 * @param numberLeftBrackets
+	 * @param numberRightBrackets
+	 * @param next
+	 * @return
+	 */
+	private boolean checkIfJsonHasEqualNumberExpressionsBeforeComma(int numberLeftKeys, int numberRightKeys, int numberLeftBrackets, 
+			int numberRightBrackets, String next) {
+		
+		return next.equals(DelimitersEnum.COMMA.getValue()) && hasEqualNumberOfKeysOrBrackets(numberLeftKeys, numberRightKeys) 
+				&& hasEqualNumberOfKeysOrBrackets(numberLeftBrackets, numberRightBrackets);
+	}
+
+	/**
+	 * Method that checks if the expression to be read is a right bracket.
+	 * 
+	 * @author Mariana Azevedo
+	 * @since 27/05/2019
+	 * 
+	 * @param numberRightBrackets
+	 * @param next
+	 * @return
+	 */
+	private int checkIfExpressionIsARightBracket(int numberRightBrackets, String next) {
+		if(next.equals(DelimitersEnum.RIGHT_BRACKETS.getValue())) numberRightBrackets++;
+		return numberRightBrackets;
+	}
+
+	/**
+	 * Method that checks if the expression to be read is a left bracket.
+	 * 
+	 * @author Mariana Azevedo
+	 * @since 27/05/2019
+	 * 
+	 * @param numberLeftBrackets
+	 * @param next
+	 * @return
+	 */
+	private int checkIfExpressionIsALeftBracket(int numberLeftBrackets, String next) {
+		if(next.equals(DelimitersEnum.LEFT_BRACKETS.getValue())) numberLeftBrackets++;
+		return numberLeftBrackets;
+	}
+
+	/**
+	 * Method that checks if the expression to be read is a right key.
+	 * 
+	 * @author Mariana Azevedo
+	 * @since 27/05/2019
+	 * 
+	 * @param numberRightKeys
+	 * @param next
+	 * @return
+	 */
+	private int checkIfExpressionisARightKey(int numberRightKeys, String next) {
+		if(next.equals(DelimitersEnum.RIGHT_KEY.getValue())) numberRightKeys++;
+		return numberRightKeys;
+	}
+
+	/**
+	 * Method that checks if the expression to be read is a left key.
+	 * 
+	 * @author Mariana Azevedo
+	 * @since 27/05/2019
+	 * 
+	 * @param numberLeftKeys
+	 * @param next
+	 * @return
+	 */
+	private int checkNumberOfLeftKeys(int numberLeftKeys, String next) {
+		if(next.equals(DelimitersEnum.LEFT_KEY.getValue())) numberLeftKeys++;
+		return numberLeftKeys;
 	}
 	
 	/**
