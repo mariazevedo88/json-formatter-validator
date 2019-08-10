@@ -1,5 +1,12 @@
 package io.github.mariazevedo88.jfv.enumeration;
 
+/**
+ * Enum that lists the items used as delimiters in the application.
+ * 
+ * @author Mariana Azevedo
+ * @since 07/03/2019
+ *
+ */
 public enum DelimitersEnum {
 	
 	COLON(":"),
@@ -14,7 +21,8 @@ public enum DelimitersEnum {
 	QUOTES("''"),
 	LEFT_KEY("{"),
 	LEFT_BRACKETS("["),
-	RIGHT_BRACKETS("]");
+	RIGHT_BRACKETS("]"),
+	COLON_WITH_LEFT_KEY(":{");
 	
 	private String value;
 	

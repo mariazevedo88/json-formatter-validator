@@ -20,9 +20,18 @@ public class JsonFormatterValidatorApplication {
 	
 	private static JsonObject json;
 
+	/**
+	 * Method that executes the formattter/validator application
+	 * 
+	 * @author Mariana Azevedo
+	 * @since 10/02/2019
+	 * 
+	 * @param args
+	 * @throws IOException
+	 */
 	public static void main(String[] args) throws IOException{
 		
-		logger.info("Started Json Formatter Validator Aplication");
+		logger.info("Started Json Formatter Validator Application");
 		
 		CustomJSONFormatter formatter = new CustomJSONFormatter();
 		
@@ -31,6 +40,14 @@ public class JsonFormatterValidatorApplication {
 		}
 	}
 
+	/**
+	 * Method that returns a JsonObject
+	 * 
+	 * @author Mariana Azevedo
+	 * @since 10/02/2019
+	 * 
+	 * @return JsonObject
+	 */
 	public static JsonObject getJson() {
 		return json;
 	}

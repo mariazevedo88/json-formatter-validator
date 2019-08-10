@@ -32,26 +32,25 @@
 		
 		<gson.version>2.8.5</gson.version>
 		<log4j.version>1.2.17</log4j.version>
-		<junit.jupiter.version>5.4.0</junit.jupiter.version>
-		<jacoco.version>0.7.9</jacoco.version>
-		<compiler.plugin.version>3.6.1</compiler.plugin.version>
-		<jar.plugin.version>2.4</jar.plugin.version>
+		<junit.jupiter.version>5.5.1</junit.jupiter.version>
+		<jacoco.version>0.8.4</jacoco.version>
+		<compiler.plugin.version>3.8.1</compiler.plugin.version>
+		<jar.plugin.version>3.1.2</jar.plugin.version>
 		<surefire.plugin.version>2.22.0</surefire.plugin.version>
 		<coveralls.version>4.3.0</coveralls.version>
-		<deploy.plugin.version>2.8.2</deploy.plugin.version>
-		<nexus.staging.maven.plugin.version>1.6.7</nexus.staging.maven.plugin.version>
+		<deploy.plugin.version>3.0.0-M1</deploy.plugin.version>
+		<nexus.staging.maven.plugin.version>1.6.8</nexus.staging.maven.plugin.version>
 		<maven.gpg.plugin.version>1.6</maven.gpg.plugin.version>
 		<maven.release.plugin.version>2.5.3</maven.release.plugin.version>
-		<maven.scm.provider.gitexe.version>1.9.5</maven.scm.provider.gitexe.version>
-		<source.plugin.version>3.0.1</source.plugin.version>
-		
+		<maven.scm.provider.gitexe.version>1.11.2</maven.scm.provider.gitexe.version>
+		<source.plugin.version>3.1.0</source.plugin.version>
 	</properties>
 	
 	<scm>
 		<connection>scm:git:git://github.com/mariazevedo88/json-formatter-validator.git</connection>
 		<developerConnection>scm:git:git@github.com:mariazevedo88/json-formatter-validator.git</developerConnection>
 		<url>https://github.com/mariazevedo88/json-formatter-validator</url>
-		<tag>json-formatter-validator-2.0.2</tag>
+		<tag>json-formatter-validator-2.0.3</tag>
 	</scm>
 	
 	<distributionManagement>
@@ -195,7 +194,7 @@
 						</goals>
 					</execution>
 					<execution>
-						<id>post-unit-test</id>
+						<id>unit-test</id>
 						<phase>test</phase>
 						<goals>
 							<goal>report</goal>
@@ -211,9 +210,19 @@
 					                    <limit implementation="org.jacoco.report.check.Limit">
 					                        <counter>COMPLEXITY</counter>
 					                        <value>COVEREDRATIO</value>
-					                        <minimum>0.50</minimum>
-					                    </limit>
-					                </limits>
+					                        <minimum>80%</minimum>
+							            </limit>
+							            <limit implementation="org.jacoco.report.check.Limit">
+							                <counter>LINE</counter>
+							                <value>COVEREDRATIO</value>
+							               	<minimum>80%</minimum>
+							            </limit>
+							            <limit implementation="org.jacoco.report.check.Limit">
+							               	<counter>BRANCH</counter>
+							               	<value>COVEREDRATIO</value>
+							               	<minimum>80%</minimum>
+							            </limit>
+						            </limits>
 					            </rule>
 					        </rules>
 							<dataFile>target/jacoco.exec</dataFile>
@@ -221,6 +230,38 @@
 							<outputDirectory>target/jacoco-ut</outputDirectory>
 						</configuration>
 					</execution>
+					<execution>
+                        <id>default-check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <haltOnFailure>true</haltOnFailure>
+                            <rules>
+                                <!--  implementation is needed only for Maven 2  -->
+                                <rule implementation="org.jacoco.maven.RuleConfiguration">
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit implementation="org.jacoco.report.check.Limit">
+                                            <counter>COMPLEXITY</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>80%</minimum>
+                                        </limit>
+                                        <limit implementation="org.jacoco.report.check.Limit">
+							                <counter>LINE</counter>
+							                <value>COVEREDRATIO</value>
+							               	<minimum>80%</minimum>
+							            </limit>
+							            <limit implementation="org.jacoco.report.check.Limit">
+							               	<counter>BRANCH</counter>
+							               	<value>COVEREDRATIO</value>
+							               	<minimum>80%</minimum>
+							            </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
 				</executions>
 				<configuration>
 					<systemPropertyVariables>
@@ -268,7 +309,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
-				<version>${maven.release.plugin.version}</version>
+				<version>${maven.release.plugin.version}</version><!--$NO-MVN-MAN-VER$-->
 				<configuration>
 					<localCheckout>true</localCheckout>
 					<pushChanges>false</pushChanges>
@@ -320,5 +361,4 @@
 			</build>
 		</profile>
 	</profiles>
-
 </project>
