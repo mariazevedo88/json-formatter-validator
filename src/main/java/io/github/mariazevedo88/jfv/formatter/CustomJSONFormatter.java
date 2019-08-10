@@ -31,7 +31,7 @@ import io.github.mariazevedo88.jfv.enumeration.DelimitersEnum;
 public class CustomJSONFormatter {
 	
 	private static final Logger logger = Logger.getLogger(CustomJSONFormatter.class.getName());
-	private JsonObject validJson;
+	private JsonElement validJson;
 	
 	/**
 	 * Method that verify in a object is a valid or invalid JSON
@@ -47,14 +47,17 @@ public class CustomJSONFormatter {
 		
 		if(json instanceof BufferedReader){
 			JsonElement res = new JsonParser().parse((BufferedReader)json);
-			if(res != null && res.isJsonObject()){
-				this.validJson = (JsonObject) res;
-				return true;
-			}
+			this.validJson = res;
+			return true;
 		}
 		
-		if(json instanceof JsonObject || json instanceof JsonArray) {
+		if(json instanceof JsonObject) {
 			this.validJson = (JsonObject) json;
+			return true;
+		}
+		
+		if(json instanceof JsonArray) {
+			this.validJson = (JsonArray) json;
 			return true;
 		}
 			
@@ -74,7 +77,7 @@ public class CustomJSONFormatter {
 	 * @param json
 	 * @param muteException
 	 */
-	private void parseJSONObject(Object json, boolean muteException) {
+	public void parseJSONObject(Object json, boolean muteException) {
 		
 		JsonElement res = null;
 		
@@ -94,8 +97,9 @@ public class CustomJSONFormatter {
 			res = new JsonParser().parse((BufferedReader)json);
 		}
 		
-		if (res != null && res.isJsonObject()) {
-			this.validJson = res.getAsJsonObject();
+		if (res != null) {
+			if(res.isJsonObject()) this.validJson = res.getAsJsonObject();
+			if(res.isJsonArray()) this.validJson = res.getAsJsonArray();
         }
 	}
 	
@@ -117,7 +121,7 @@ public class CustomJSONFormatter {
 	 */
 	private static String getInvalidJsonToFormat(String invalidJson, boolean muteException) {
 		
-		invalidJson = fixMalformatedFields(invalidJson); //format malformated fields before apply the main regex
+		invalidJson = fixMalformedFields(invalidJson); //format malformated fields before apply the main regex
 		invalidJson = fixEmptyFields(invalidJson); //format empty fields before apply the main regex
 		
 		invalidJson = invalidJson.replaceAll("(?<=\\{|, ?)([a-zA-Z]+?): ?(?![\\{\\[])(.+?)(?=,|})", "\"$1\": \"$2\"");
@@ -153,7 +157,7 @@ public class CustomJSONFormatter {
 	 * @param invalidJson
 	 * @return String
 	 */
-	private static String fixMalformatedFields(String invalidJson) {
+	private static String fixMalformedFields(String invalidJson) {
 		
 		invalidJson = invalidJson.replaceAll("\\s+,,", ","); //correcting double commas with space
 		invalidJson = invalidJson.replaceAll("(\\d+)\\,(\\d+)", "$1.$2"); //correcting decimal numbers with comma
@@ -219,14 +223,17 @@ public class CustomJSONFormatter {
 		while(hasInvalidValues) {
 			builderModified = cleanInvalidJsonValues(invalidJsonValues, builderModified, muteException);
 			
-			if(!muteException && builderModified.length() == 0) {
-				throw new JsonParseException("Error: JSON with more invalid characters than commas and quotes on keys and values.");
-			}
-
-			invalidJsonValues = builderModified.toString().split(DelimitersEnum.COMMA.getValue());
-			
-			if(!isStringHasInvalidJsonValues(invalidJsonValues)) {
-				hasInvalidValues = false;
+			if(builderModified.length() == 0) {
+				if(muteException) {
+					hasInvalidValues = false;
+				}else {
+					throw new JsonParseException("Error: JSON with more invalid characters than commas and quotes on keys and values.");
+				}
+			}else {
+				invalidJsonValues = builderModified.toString().split(DelimitersEnum.COMMA.getValue());
+				if(!isStringHasInvalidJsonValues(invalidJsonValues)) {
+					hasInvalidValues = false;
+				}
 			}
 		}
 		
@@ -261,6 +268,7 @@ public class CustomJSONFormatter {
 		
 		StringBuilder builderModified = new StringBuilder(builder);
 		String previousField = DelimitersEnum.EMPTY_STRING.getValue();
+		boolean isClean = false;
 		
 		List<String> collection = Arrays.stream(invalidJsonValues).collect(Collectors.toList());
 		for(String stringAnalyzed : collection) {
@@ -268,7 +276,8 @@ public class CustomJSONFormatter {
 				previousField = stringAnalyzed;
 			}else{
 				if(!stringAnalyzed.isEmpty()) {
-					cleanWrongQuotesOnFields(builderModified, previousField, stringAnalyzed, muteException);
+					isClean = cleanWrongQuotesOnFields(builderModified, previousField, stringAnalyzed, muteException);
+					if(isClean) builderModified = new StringBuilder(DelimitersEnum.EMPTY_STRING.getValue());
 					break;
 				}
 			}
@@ -289,11 +298,12 @@ public class CustomJSONFormatter {
 	 * @param previousField
 	 * @param stringToBeAnalyzed
 	 */
-	private static void cleanWrongQuotesOnFields(StringBuilder builderModified, String previousField, String stringToBeAnalyzed, 
+	private static boolean cleanWrongQuotesOnFields(StringBuilder builderModified, String previousField, String stringToBeAnalyzed, 
 			boolean muteException) {
 		
 		StringBuilder stringBuilderToBeReplaced = new StringBuilder(previousField);
 		int lastIndexOf = previousField.length();
+		boolean isClean = false;
 		
 		try {
 			if(stringBuilderToBeReplaced.lastIndexOf(DelimitersEnum.RIGHT_DOUBLE_QUOTE_WITH_ESCAPE.getValue()) == lastIndexOf-1) {
@@ -304,32 +314,37 @@ public class CustomJSONFormatter {
 			if(!muteException) {
 				throw new StringIndexOutOfBoundsException("String is an empty object or has an invalid structure (key without value or vice-versa): " + stringToBeAnalyzed);
 			}else {
-				return;
+				isClean = true;
+				logger.error("String is an empty object or has an invalid structure (key without value or vice-versa): " + stringToBeAnalyzed);
 			}
 		}
 		
-		if(stringToBeAnalyzed.contains(DelimitersEnum.RIGHT_KEY.getValue())){
-			//If the field that has commas in the middle, but is at the end of the object, 
-			//treat so that the quotes are in the right place
-			int lastIndexOfString = stringToBeAnalyzed.length();
-			String stringModified = new StringBuilder(stringToBeAnalyzed).deleteCharAt(lastIndexOfString-1).toString(); 
-			stringBuilderToBeReplaced.append(stringModified).append(DelimitersEnum.RIGHT_KEY_WITH_ESCAPE.getValue());
-		}else{
-			stringBuilderToBeReplaced.append(stringToBeAnalyzed).append(DelimitersEnum.RIGHT_DOUBLE_QUOTE_WITH_ESCAPE.getValue());
+		if(!isClean) {
+			if(stringToBeAnalyzed.contains(DelimitersEnum.RIGHT_KEY.getValue())){
+				//If the field that has commas in the middle, but is at the end of the object, 
+				//treat so that the quotes are in the right place
+				int lastIndexOfString = stringToBeAnalyzed.length();
+				String stringModified = new StringBuilder(stringToBeAnalyzed).deleteCharAt(lastIndexOfString-1).toString(); 
+				stringBuilderToBeReplaced.append(stringModified).append(DelimitersEnum.RIGHT_KEY_WITH_ESCAPE.getValue());
+			}else{
+				stringBuilderToBeReplaced.append(stringToBeAnalyzed).append(DelimitersEnum.RIGHT_DOUBLE_QUOTE_WITH_ESCAPE.getValue());
+			}
+			
+			Pattern pattern = Pattern.compile(stringToBeAnalyzed, Pattern.LITERAL);
+			replaceStringBasedOnAPattern(builderModified, pattern, DelimitersEnum.EMPTY_STRING.getValue());
+			
+			try {
+				pattern = Pattern.compile(previousField);
+				replaceStringBasedOnAPattern(builderModified, pattern, stringBuilderToBeReplaced.toString());
+			}catch (PatternSyntaxException e){
+				splitPatternToNearowTheSearch(builderModified, previousField, stringBuilderToBeReplaced);
+			}
+			
+			pattern = Pattern.compile(DelimitersEnum.DOUBLE_COMMA.getValue());
+			replaceStringBasedOnAPattern(builderModified, pattern, DelimitersEnum.COMMA.getValue());
 		}
 		
-		Pattern pattern = Pattern.compile(stringToBeAnalyzed, Pattern.LITERAL);
-		replaceStringBasedOnAPattern(builderModified, pattern, DelimitersEnum.EMPTY_STRING.getValue());
-		
-		try {
-			pattern = Pattern.compile(previousField);
-			replaceStringBasedOnAPattern(builderModified, pattern, stringBuilderToBeReplaced.toString());
-		}catch (PatternSyntaxException e){
-			splitPatternToNearowTheSearch(builderModified, previousField, stringBuilderToBeReplaced);
-		}
-		
-		pattern = Pattern.compile(DelimitersEnum.DOUBLE_COMMA.getValue());
-		replaceStringBasedOnAPattern(builderModified, pattern, DelimitersEnum.COMMA.getValue());
+		return isClean;
 	}
 
 	/**
@@ -383,7 +398,7 @@ public class CustomJSONFormatter {
 	 * @return JsonObject
 	 * @throws IOException
 	 */
-	public JsonObject checkValidityAndFormatObject(Object json, boolean muteLog, boolean muteException) throws IOException {
+	public JsonElement checkValidityAndFormatObject(Object json, boolean muteLog, boolean muteException) throws IOException {
 		
 		String jsonToTest = null;
 		BufferedReader reader = null;
@@ -397,6 +412,7 @@ public class CustomJSONFormatter {
 			if(!muteException) {
 				throw new NullPointerException("Object to validated is null.");
 			}else {
+				this.validJson = null;
 				return validJson;
 			}
 		}
@@ -411,8 +427,8 @@ public class CustomJSONFormatter {
 			}
 		}
 		
-		if(!muteLog && this.validJson != null) {
-			logger.info("Valid json: " + this.validJson);
+		if(this.validJson != null) {
+			if(!muteLog) logger.info("Valid json: " + this.validJson);
 		}else {
 			if(!muteLog) 
 				logger.warn("JsonParseException: JSON with more invalid characters than commas and quotes on keys and values.");
@@ -686,7 +702,7 @@ public class CustomJSONFormatter {
 	 * 
 	 * @return JsonObject
 	 */
-	public JsonObject getValidJson() {
+	public JsonElement getValidJson() {
 		return validJson;
 	}
 

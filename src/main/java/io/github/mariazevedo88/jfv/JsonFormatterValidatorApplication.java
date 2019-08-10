@@ -3,7 +3,8 @@ package io.github.mariazevedo88.jfv;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
-import com.google.gson.JsonObject;
+
+import com.google.gson.JsonElement;
 
 import io.github.mariazevedo88.jfv.formatter.CustomJSONFormatter;
 
@@ -18,7 +19,7 @@ public class JsonFormatterValidatorApplication {
 	
 	private static final Logger logger = Logger.getLogger(JsonFormatterValidatorApplication.class.getName());
 	
-	private static JsonObject json;
+	private static JsonElement json;
 
 	/**
 	 * Method that executes the formattter/validator application
@@ -48,7 +49,7 @@ public class JsonFormatterValidatorApplication {
 	 * 
 	 * @return JsonObject
 	 */
-	public static JsonObject getJson() {
+	public static JsonElement getJson() {
 		return json;
 	}
 
