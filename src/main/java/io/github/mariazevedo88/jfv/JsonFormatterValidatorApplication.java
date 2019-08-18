@@ -6,7 +6,7 @@ import org.apache.log4j.Logger;
 
 import com.google.gson.JsonElement;
 
-import io.github.mariazevedo88.jfv.formatter.CustomJSONFormatter;
+import io.github.mariazevedo88.jfv.service.CustomJSONFormatter;
 
 /**
  * Application's main class 

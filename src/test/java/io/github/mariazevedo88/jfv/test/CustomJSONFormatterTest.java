@@ -30,7 +30,8 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
 
 import io.github.mariazevedo88.jfv.JsonFormatterValidatorApplication;
-import io.github.mariazevedo88.jfv.formatter.CustomJSONFormatter;
+import io.github.mariazevedo88.jfv.service.CustomJSONFormatter;
+import io.github.mariazevedo88.jfv.service.CustomJSONValidatorFilters;
 
 /**
  * CustomJSONFormatter test class
@@ -46,10 +47,12 @@ public class CustomJSONFormatterTest{
 	
 	private static final Logger logger = Logger.getLogger(CustomJSONFormatterTest.class.getName());
 	private CustomJSONFormatter formatter;
+	private CustomJSONValidatorFilters validator;
 	
 	@BeforeAll
 	public void setUp() {
 		formatter = new CustomJSONFormatter();
+		validator = new CustomJSONValidatorFilters();
 	}
 	
 	@Test
@@ -296,7 +299,7 @@ public class CustomJSONFormatterTest{
 		String jsonToRemove = "{id:268852005101,productCode:02-688520051,purchaseDate:2019-02-01,lastUpdate:2019-02-01}";
 		logger.info("Invalid json with string to remove: " + jsonToRemove);
 		String[] removeAll = {"purchaseDate"};
-		String jsonFormatted = formatter.removeJSONObjectsFromString(jsonToRemove, removeAll);
+		String jsonFormatted = validator.removeJSONObjectsFromString(jsonToRemove, removeAll);
 		JsonElement json = formatter.checkValidityAndFormatObject(jsonFormatted, false, false);
 		assertTrue(json.isJsonObject());
 	}
@@ -308,7 +311,7 @@ public class CustomJSONFormatterTest{
 		String jsonToRemove = "{pf:{cpf:11122233385,name:MARIANA DE AZEVEDO SANTOS}, localDate:2019-02-01}";
 		logger.info("Invalid json with string to remove: " + jsonToRemove);
 		String[] removeAll = {"pf"};
-		String jsonFormatted = formatter.removeJSONObjectsFromString(jsonToRemove, removeAll);
+		String jsonFormatted = validator.removeJSONObjectsFromString(jsonToRemove, removeAll);
 		JsonElement json = formatter.checkValidityAndFormatObject(jsonFormatted, false, false);
 		assertTrue(json.isJsonObject());
 	}
@@ -320,7 +323,7 @@ public class CustomJSONFormatterTest{
 		String jsonToRemove = "{totalAmount:326.98,totalFreight:79.99,totalDiscount:0,products:[{link:{id:BLABLABLA-1,rel:sku},quantity:1,price:246.99,freight:79.99,discount:0}, {link:{id:BLABLABLA-2,rel:sku},quantity:1,price:246.99,freight:79.99,discount:0}]}";
 		logger.info("Invalid json with string to remove: " + jsonToRemove);
 		String[] removeAll = {"products"};
-		String jsonFormatted = formatter.removeJSONObjectsFromString(jsonToRemove, removeAll);
+		String jsonFormatted = validator.removeJSONObjectsFromString(jsonToRemove, removeAll);
 		JsonElement json = formatter.checkValidityAndFormatObject(jsonFormatted, false, false);
 		assertTrue(json.isJsonObject());
 	}
@@ -332,7 +335,7 @@ public class CustomJSONFormatterTest{
 		String jsonToRemove = "{totalAmount:326.98,totalFreight:79.99,totalDiscount:0,products:[{link:{id:BLABLABLA-1,rel:sku},quantity:1,price:246.99,freight:79.99,discount:0}, {link:{id:BLABLABLA-2,rel:sku},quantity:1,price:246.99,freight:79.99,discount:0}]}";
 		logger.info("Invalid json with string to remove: " + jsonToRemove);
 		String[] removeAll = {"products", "totalAmount"};
-		String jsonFormatted = formatter.removeJSONObjectsFromString(jsonToRemove, removeAll);
+		String jsonFormatted = validator.removeJSONObjectsFromString(jsonToRemove, removeAll);
 		JsonElement json = formatter.checkValidityAndFormatObject(jsonFormatted, false, false);
 		assertTrue(json.isJsonObject());
 	}
@@ -344,7 +347,7 @@ public class CustomJSONFormatterTest{
 		String jsonToFilter = "{totalAmount:326.98,totalFreight:79.99,totalDiscount:0,products:[{link:{id:BLABLABLA-1,rel:sku},quantity:1,price:246.99,freight:79.99,discount:0}, {link:{id:BLABLABLA-2,rel:sku},quantity:1,price:246.99,freight:79.99,discount:0}]}";
 		logger.info("Invalid json with string to filter: " + jsonToFilter);
 		String[] filter = {"totalDiscount"};
-		String jsonFormatted = formatter.filterJSONObjectsFromString(jsonToFilter, filter);
+		String jsonFormatted = validator.filterJSONObjectsFromString(jsonToFilter, filter);
 		JsonElement json = formatter.checkValidityAndFormatObject(jsonFormatted, false, false);
 		assertTrue(json.isJsonObject());
 	}
@@ -356,7 +359,7 @@ public class CustomJSONFormatterTest{
 		String jsonToFilter = "{totalAmount:326.98,totalFreight:79.99,totalDiscount:0,products:[{link:{id:BLABLABLA-1,rel:sku},quantity:1,price:246.99,freight:79.99,discount:0}, {link:{id:BLABLABLA-2,rel:sku},quantity:1,price:246.99,freight:79.99,discount:0}]}";
 		logger.info("Invalid json with string to filter: " + jsonToFilter);
 		String[] filter = {"products", "totalAmount"};
-		String jsonFormatted = formatter.filterJSONObjectsFromString(jsonToFilter, filter);
+		String jsonFormatted = validator.filterJSONObjectsFromString(jsonToFilter, filter);
 		JsonElement json = formatter.checkValidityAndFormatObject(jsonFormatted, false, false);
 		assertTrue(json.isJsonObject());
 	}
@@ -368,7 +371,7 @@ public class CustomJSONFormatterTest{
 		String jsonToRemove = "{id:265998308001,productCode:02-659983080,purchaseDate:2018-01-17,customer:{pf:{cpf:012345678,name:Mariana},deliveryAddress:{street:Rua Fechada,number:666,additionalInfo:casa,reference:nos fundos do armazem,neighborhood:Lavras,city:Lavras,state:MG,zipcode:01234000},telephones:{main:{ddd:35,number:38222482},secondary:{ddd:35,number:38222482},business:{ddd:35,number:38222482}}},payer:{pf:{cpf:012345678,name:Mariana},birthDate:1988-07-22,billingAddress:{street:Rua Fechada,number:22,additionalInfo:casa da rua (error},reference:em Frente a Praca Agusto Silva,neighborhood:Lavras,city:Lavras,state:MG,zipcode:24415040},business:{ddd:35,number:38222482}}},totalAmount:183.98}";
 		logger.info("Invalid json with string to remove: " + jsonToRemove);
 		String[] remove = {"customer", "payer"};
-		String jsonFormatted = formatter.removeJSONObjectsFromString(jsonToRemove, remove);
+		String jsonFormatted = validator.removeJSONObjectsFromString(jsonToRemove, remove);
 		JsonElement json = formatter.checkValidityAndFormatObject(jsonFormatted, false, true);
 		assertNull(json);
 	}
@@ -381,7 +384,7 @@ public class CustomJSONFormatterTest{
 			String jsonToRemove = "{id:265998308001,productCode:02-659983080,purchaseDate:2018-01-17,customer:{pf:{cpf:012345678,name:Mariana},deliveryAddress:{street:Rua Fechada,number:666,additionalInfo:casa,reference:nos fundos do armazem,neighborhood:Lavras,city:Lavras,state:MG,zipcode:01234000},telephones:{main:{ddd:35,number:38222482},secondary:{ddd:35,number:38222482},business:{ddd:35,number:38222482}}},payer:{pf:{cpf:012345678,name:Mariana},birthDate:1988-07-22,billingAddress:{street:Rua Fechada,number:22,additionalInfo:casa da rua (error},reference:em Frente a Praca Agusto Silva,neighborhood:Lavras,city:Lavras,state:MG,zipcode:24415040},business:{ddd:35,number:38222482}}},totalAmount:183.98}";
 			logger.info("Invalid json with string to remove: " + jsonToRemove);
 			String[] remove = {"customer", "payer"};
-			String jsonFormatted = formatter.removeJSONObjectsFromString(jsonToRemove, remove);
+			String jsonFormatted = validator.removeJSONObjectsFromString(jsonToRemove, remove);
 			formatter.checkValidityAndFormatObject(jsonFormatted, false, false);
 		});
 	}
@@ -529,6 +532,7 @@ public class CustomJSONFormatterTest{
 	@AfterAll
 	public void tearDown() {
 		formatter = null;
+		validator = null;
 	}
 
 }
