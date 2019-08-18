@@ -108,7 +108,7 @@ public class CustomJSONFormatterTest{
 	@DisplayName("Should get a valid JSONObject")
 	@Order(6)
 	public void shouldGetValidJSON() throws IOException {
-		JsonElement json = formatter.getValidJson();
+		JsonElement json = formatter.getCustomJson().getValidJson();
 		assertTrue(!json.isJsonNull());
 	}
 	
@@ -392,7 +392,7 @@ public class CustomJSONFormatterTest{
 	public void shouldVerifyIfJSONIsValid() throws IOException {
 		String jsonFromString = "{id:267107086801,productCode:02-671070868,purchaseDate:2018-07-15}";
 		logger.info("Invalid json: " + jsonFromString);
-		assertFalse(formatter.isValidJson(jsonFromString, true));
+		assertFalse(formatter.getCustomJson().isValidJson(jsonFromString, true));
 	}
 	
 	@Test
@@ -429,7 +429,7 @@ public class CustomJSONFormatterTest{
 		File file = new File("src/test/resources/mock_invalid_json.json");
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		logger.info("Invalid json file: " + file.getName());
-		assertTrue(formatter.isValidJson(reader, true));
+		assertTrue(formatter.getCustomJson().isValidJson(reader, true));
 	}
 	
 	@Test
@@ -444,7 +444,7 @@ public class CustomJSONFormatterTest{
 		jsonObject.add("developer", innerObject);
 		
 		logger.info("Json object in test: " + jsonObject);
-		assertTrue(formatter.isValidJson(jsonObject, true));
+		assertTrue(formatter.getCustomJson().isValidJson(jsonObject, true));
 	}
 	
 	@Test
@@ -462,7 +462,7 @@ public class CustomJSONFormatterTest{
 		jsonArray.add(jsonObject);
 		
 		logger.info("Json object in test: " + jsonArray);
-		assertTrue(formatter.isValidJson(jsonArray, true));
+		assertTrue(formatter.getCustomJson().isValidJson(jsonArray, true));
 	}
 	
 	@Test
@@ -505,8 +505,8 @@ public class CustomJSONFormatterTest{
 		File file = new File("src/test/resources/mock_invalid_json.json");
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		logger.info("Invalid json file: " + file.getName());
-		formatter.parseJSONObject(reader, true);
-		assertNotNull(formatter.getValidJson());
+		formatter.getCustomJson().parseJSONObject(reader, true);
+		assertNotNull(formatter.getCustomJson().getValidJson());
 	}
 	
 	@Test
@@ -522,8 +522,8 @@ public class CustomJSONFormatterTest{
 		jsonArray.add(jsonObject);
 		
 		logger.info("Json object in test: " + jsonArray);
-		formatter.parseJSONObject(jsonArray.toString(), true);
-		assertNotNull(formatter.getValidJson());
+		formatter.getCustomJson().parseJSONObject(jsonArray.toString(), true);
+		assertNotNull(formatter.getCustomJson().getValidJson());
 	}
 	
 	@AfterAll

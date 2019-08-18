@@ -12,14 +12,11 @@ import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
 
 import io.github.mariazevedo88.jfv.enumeration.DelimitersEnum;
+import io.github.mariazevedo88.jfv.model.CustomJSON;
 
 /**
  * Class that verify a JSON and format in cases of invalid JSON
@@ -31,76 +28,10 @@ import io.github.mariazevedo88.jfv.enumeration.DelimitersEnum;
 public class CustomJSONFormatter {
 	
 	private static final Logger logger = Logger.getLogger(CustomJSONFormatter.class.getName());
-	private JsonElement validJson;
+	private CustomJSON customJson;
 	
-	/**
-	 * Method that verify in a object is a valid or invalid JSON
-	 * 
-	 * @author Mariana Azevedo
-	 * @since 10/02/2019
-	 * 
-	 * @param json
-	 * @param muteLog
-	 * @return boolean
-	 */
-	public boolean isValidJson(Object json, boolean muteLog){
-		
-		if(json instanceof BufferedReader){
-			JsonElement res = new JsonParser().parse((BufferedReader)json);
-			this.validJson = res;
-			return true;
-		}
-		
-		if(json instanceof JsonObject) {
-			this.validJson = (JsonObject) json;
-			return true;
-		}
-		
-		if(json instanceof JsonArray) {
-			this.validJson = (JsonArray) json;
-			return true;
-		}
-			
-		if(!muteLog) {
-			logger.info("Invalid json: " + json.toString());
-		}
-		
-        return false;
-	}
-	
-	/**
-	 * Method that parses a JSON object
-	 * 
-	 * @author Mariana Azevedo
-	 * @since 10/02/2019
-	 * 
-	 * @param json
-	 * @param muteException
-	 */
-	public void parseJSONObject(Object json, boolean muteException) {
-		
-		JsonElement res = null;
-		
-		if(json instanceof String){
-			try {
-				res = new JsonParser().parse((String)json);
-			}catch(JsonSyntaxException e) {
-				if(!muteException) {
-					throw new JsonSyntaxException("Error: JSON with more invalid characters than commas and quotes on keys and values.");
-				}else {
-					this.validJson = null;
-				}
-			}
-		}
-		
-		if(json instanceof BufferedReader){
-			res = new JsonParser().parse((BufferedReader)json);
-		}
-		
-		if (res != null) {
-			if(res.isJsonObject()) this.validJson = res.getAsJsonObject();
-			if(res.isJsonArray()) this.validJson = res.getAsJsonArray();
-        }
+	public CustomJSONFormatter() {
+		customJson = new CustomJSON();
 	}
 	
 	/**
@@ -412,29 +343,29 @@ public class CustomJSONFormatter {
 			if(!muteException) {
 				throw new NullPointerException("Object to validated is null.");
 			}else {
-				this.validJson = null;
-				return validJson;
+				this.customJson.setValidJson(null);
+				return customJson.getValidJson();
 			}
 		}
 		
-		if(!isValidJson(json, muteLog)) {
+		if(!customJson.isValidJson(json, muteLog)) {
 			
 			jsonToTest = getInvalidJsonToFormat(json.toString(), muteException);
-			parseJSONObject(jsonToTest, muteException);
+			customJson.parseJSONObject(jsonToTest, muteException);
 			
 			if(reader != null){
 				reader.close();
 			}
 		}
 		
-		if(this.validJson != null) {
-			if(!muteLog) logger.info("Valid json: " + this.validJson);
+		if(this.customJson.getValidJson() != null) {
+			if(!muteLog) logger.info("Valid json: " + this.customJson);
 		}else {
 			if(!muteLog) 
 				logger.warn("JsonParseException: JSON with more invalid characters than commas and quotes on keys and values.");
 		}
 		
-		return validJson;
+		return customJson.getValidJson();
 	}
 	
 	/**
@@ -693,17 +624,8 @@ public class CustomJSONFormatter {
 	private boolean hasEqualNumberOfKeysOrBrackets(int numberLeft, int numberRight) {
 		return numberLeft == numberRight;
 	}
-	
-	/**
-	 * Method that return a valid JSON
-	 * 
-	 * @author Mariana Azevedo
-	 * @since 10/02/2019
-	 * 
-	 * @return JsonObject
-	 */
-	public JsonElement getValidJson() {
-		return validJson;
-	}
 
+	public CustomJSON getCustomJson() {
+		return customJson;
+	}
 }
