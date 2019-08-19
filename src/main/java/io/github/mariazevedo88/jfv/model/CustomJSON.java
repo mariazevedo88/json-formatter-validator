@@ -28,7 +28,7 @@ public class CustomJSON {
 	 * @author Mariana Azevedo
 	 * @since 10/02/2019
 	 * 
-	 * @return JsonObject
+	 * @return validJson
 	 */
 	public JsonElement getValidJson() {
 		return validJson;
@@ -40,7 +40,7 @@ public class CustomJSON {
 	 * @author Mariana Azevedo
 	 * @since 17/08/2019
 	 * 
-	 * @return JsonObject
+	 * @param validJson
 	 */
 	public void setValidJson(JsonElement validJson) {
 		this.validJson = validJson;
@@ -54,6 +54,7 @@ public class CustomJSON {
 	 * 
 	 * @param json
 	 * @param muteLog
+	 * 
 	 * @return boolean
 	 */
 	public boolean isValidJson(Object json, boolean muteLog){

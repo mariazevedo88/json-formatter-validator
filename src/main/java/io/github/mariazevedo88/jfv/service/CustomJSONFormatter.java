@@ -47,6 +47,8 @@ public class CustomJSONFormatter {
 	 * @since 10/02/2019
 	 * 
 	 * @param invalidJson
+	 * @param muteException
+	 * 
 	 * @return String
 	 */
 	private static String getInvalidJsonToFormat(String invalidJson, boolean muteException) {
@@ -72,6 +74,7 @@ public class CustomJSONFormatter {
 	 * @since 28/02/2019
 	 * 
 	 * @param invalidJson
+	 * 
 	 * @return String
 	 */
 	private static String fixFieldsWithSimpleQuotes(String invalidJson) {
@@ -85,6 +88,7 @@ public class CustomJSONFormatter {
 	 * @since 02/04/2019
 	 * 
 	 * @param invalidJson
+	 * 
 	 * @return String
 	 */
 	private static String fixMalformedFields(String invalidJson) {
@@ -107,6 +111,7 @@ public class CustomJSONFormatter {
 	 * @since 28/02/2019
 	 * 
 	 * @param invalidJson
+	 * 
 	 * @return String
 	 */
 	private static String fixEmptyFields(String invalidJson) {
@@ -126,6 +131,7 @@ public class CustomJSONFormatter {
 	 * @since 17/02/2019
 	 * 
 	 * @param builderModified
+	 * 
 	 * @return String
 	 */
 	private static String replaceControlDelimiters(StringBuilder builderModified) {
@@ -143,6 +149,8 @@ public class CustomJSONFormatter {
 	 * @since 17/02/2019
 	 * 
 	 * @param builderModified
+	 * @param muteException
+	 * 
 	 * @return StringBuilder
 	 */
 	private static StringBuilder fixFieldsWithCommasWronglyModified(StringBuilder builderModified, boolean muteException){
@@ -178,6 +186,8 @@ public class CustomJSONFormatter {
 	 * 
 	 * @param invalidJsonValues
 	 * @param builder
+	 * @param muteException
+	 * 
 	 * @return StringBuilder
 	 */
 	private static StringBuilder cleanInvalidJsonValues(String[] invalidJsonValues, StringBuilder builder, boolean muteException) {
@@ -213,6 +223,9 @@ public class CustomJSONFormatter {
 	 * @param builderModified
 	 * @param previousField
 	 * @param stringToBeAnalyzed
+	 * @param muteException
+	 * 
+	 * @return boolean
 	 */
 	private static boolean cleanWrongQuotesOnFields(StringBuilder builderModified, String previousField, String stringToBeAnalyzed, 
 			boolean muteException) {
@@ -311,7 +324,10 @@ public class CustomJSONFormatter {
 	 * 
 	 * @param json
 	 * @param muteLog
-	 * @return JsonObject
+	 * @param muteException
+	 * 
+	 * @return JsonElement
+	 * 
 	 * @throws IOException
 	 */
 	public JsonElement checkValidityAndFormatObject(Object json, boolean muteLog, boolean muteException) throws IOException {
@@ -353,6 +369,11 @@ public class CustomJSONFormatter {
 		return customJson.getValidJson();
 	}
 	
+	/**
+	 * Method that return a customJson object
+	 * 
+	 * @return customJson
+	 */
 	public CustomJSON getCustomJson() {
 		return customJson;
 	}

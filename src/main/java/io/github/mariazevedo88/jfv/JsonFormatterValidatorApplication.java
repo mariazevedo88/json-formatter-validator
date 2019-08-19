@@ -47,7 +47,7 @@ public class JsonFormatterValidatorApplication {
 	 * @author Mariana Azevedo
 	 * @since 10/02/2019
 	 * 
-	 * @return JsonObject
+	 * @return json
 	 */
 	public static JsonElement getJson() {
 		return json;
