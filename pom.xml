@@ -50,7 +50,7 @@
 		<connection>scm:git:git://github.com/mariazevedo88/json-formatter-validator.git</connection>
 		<developerConnection>scm:git:git@github.com:mariazevedo88/json-formatter-validator.git</developerConnection>
 		<url>https://github.com/mariazevedo88/json-formatter-validator</url>
-		<tag>json-formatter-validator-2.0.3</tag>
+		<tag>json-formatter-validator-2.0.5</tag>
 	</scm>
 	
 	<distributionManagement>
@@ -194,43 +194,6 @@
 						</goals>
 					</execution>
 					<execution>
-						<id>unit-test</id>
-						<phase>test</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-						<configuration>
-							<!-- Sets the path to the file which contains the execution data. -->
-					        <rules>
-					        	<!-- implementation is needed only for Maven 2 -->
-					            <rule implementation="org.jacoco.maven.RuleConfiguration">
-					                <element>BUNDLE</element>
-					                <limits>
-					                	<!-- implementation is needed only for Maven 2 -->
-					                    <limit implementation="org.jacoco.report.check.Limit">
-					                        <counter>COMPLEXITY</counter>
-					                        <value>COVEREDRATIO</value>
-					                        <minimum>80%</minimum>
-							            </limit>
-							            <limit implementation="org.jacoco.report.check.Limit">
-							                <counter>LINE</counter>
-							                <value>COVEREDRATIO</value>
-							               	<minimum>80%</minimum>
-							            </limit>
-							            <limit implementation="org.jacoco.report.check.Limit">
-							               	<counter>BRANCH</counter>
-							               	<value>COVEREDRATIO</value>
-							               	<minimum>80%</minimum>
-							            </limit>
-						            </limits>
-					            </rule>
-					        </rules>
-							<dataFile>target/jacoco.exec</dataFile>
-							<!-- Sets the output directory for the code coverage report. -->
-							<outputDirectory>target/jacoco-ut</outputDirectory>
-						</configuration>
-					</execution>
-					<execution>
                         <id>default-check</id>
                         <goals>
                             <goal>check</goal>
@@ -245,21 +208,24 @@
                                         <limit implementation="org.jacoco.report.check.Limit">
                                             <counter>COMPLEXITY</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>80%</minimum>
+                                            <minimum>90%</minimum>
                                         </limit>
                                         <limit implementation="org.jacoco.report.check.Limit">
 							                <counter>LINE</counter>
 							                <value>COVEREDRATIO</value>
-							               	<minimum>80%</minimum>
+							               	<minimum>90%</minimum>
 							            </limit>
 							            <limit implementation="org.jacoco.report.check.Limit">
 							               	<counter>BRANCH</counter>
 							               	<value>COVEREDRATIO</value>
-							               	<minimum>80%</minimum>
+							               	<minimum>90%</minimum>
 							            </limit>
                                     </limits>
                                 </rule>
                             </rules>
+                            <dataFile>target/jacoco.exec</dataFile>
+							<!-- Sets the output directory for the code coverage report. -->
+							<outputDirectory>target/jacoco-ut</outputDirectory>
                         </configuration>
                     </execution>
 				</executions>
