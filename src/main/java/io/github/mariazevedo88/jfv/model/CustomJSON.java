@@ -15,7 +15,6 @@ import com.google.gson.JsonSyntaxException;
  * 
  * @author Mariana Azevedo
  * @since 17/08/2019
- *
  */
 public class CustomJSON {
 	

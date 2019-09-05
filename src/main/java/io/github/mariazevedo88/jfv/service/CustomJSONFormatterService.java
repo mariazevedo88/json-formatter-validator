@@ -24,12 +24,12 @@ import io.github.mariazevedo88.jfv.model.CustomJSON;
  * @since 10/02/2019
  *
  */
-public class CustomJSONFormatter {
+public class CustomJSONFormatterService {
 	
-	private static final Logger logger = Logger.getLogger(CustomJSONFormatter.class.getName());
+	private static final Logger logger = Logger.getLogger(CustomJSONFormatterService.class.getName());
 	private CustomJSON customJson;
 	
-	public CustomJSONFormatter() {
+	public CustomJSONFormatterService() {
 		customJson = new CustomJSON();
 	}
 	
@@ -74,7 +74,6 @@ public class CustomJSONFormatter {
 	 * @since 28/02/2019
 	 * 
 	 * @param invalidJson
-	 * 
 	 * @return String
 	 */
 	private static String fixFieldsWithSimpleQuotes(String invalidJson) {
@@ -88,7 +87,6 @@ public class CustomJSONFormatter {
 	 * @since 02/04/2019
 	 * 
 	 * @param invalidJson
-	 * 
 	 * @return String
 	 */
 	private static String fixMalformedFields(String invalidJson) {
@@ -111,7 +109,6 @@ public class CustomJSONFormatter {
 	 * @since 28/02/2019
 	 * 
 	 * @param invalidJson
-	 * 
 	 * @return String
 	 */
 	private static String fixEmptyFields(String invalidJson) {
@@ -131,7 +128,6 @@ public class CustomJSONFormatter {
 	 * @since 17/02/2019
 	 * 
 	 * @param builderModified
-	 * 
 	 * @return String
 	 */
 	private static String replaceControlDelimiters(StringBuilder builderModified) {
@@ -150,7 +146,6 @@ public class CustomJSONFormatter {
 	 * 
 	 * @param builderModified
 	 * @param muteException
-	 * 
 	 * @return StringBuilder
 	 */
 	private static StringBuilder fixFieldsWithCommasWronglyModified(StringBuilder builderModified, boolean muteException){
@@ -169,7 +164,7 @@ public class CustomJSONFormatter {
 				}
 			}else {
 				invalidJsonValues = builderModified.toString().split(DelimitersEnum.COMMA.getValue());
-				if(!CustomJSONValidatorFilters.isStringHasInvalidJsonValues(invalidJsonValues)) {
+				if(!CustomJSONValidatorFiltersService.isStringHasInvalidJsonValues(invalidJsonValues)) {
 					hasInvalidValues = false;
 				}
 			}
@@ -187,7 +182,6 @@ public class CustomJSONFormatter {
 	 * @param invalidJsonValues
 	 * @param builder
 	 * @param muteException
-	 * 
 	 * @return StringBuilder
 	 */
 	private static StringBuilder cleanInvalidJsonValues(String[] invalidJsonValues, StringBuilder builder, boolean muteException) {
@@ -371,6 +365,9 @@ public class CustomJSONFormatter {
 	
 	/**
 	 * Method that return a customJson object
+	 * 
+	 * @author Mariana Azevedo
+	 * @since 18/08/2019
 	 * 
 	 * @return customJson
 	 */

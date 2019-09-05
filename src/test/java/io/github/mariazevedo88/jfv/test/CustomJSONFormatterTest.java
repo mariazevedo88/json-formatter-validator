@@ -30,8 +30,8 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
 
 import io.github.mariazevedo88.jfv.JsonFormatterValidatorApplication;
-import io.github.mariazevedo88.jfv.service.CustomJSONFormatter;
-import io.github.mariazevedo88.jfv.service.CustomJSONValidatorFilters;
+import io.github.mariazevedo88.jfv.service.CustomJSONFormatterService;
+import io.github.mariazevedo88.jfv.service.CustomJSONValidatorFiltersService;
 
 /**
  * CustomJSONFormatter test class
@@ -46,13 +46,13 @@ import io.github.mariazevedo88.jfv.service.CustomJSONValidatorFilters;
 public class CustomJSONFormatterTest{
 	
 	private static final Logger logger = Logger.getLogger(CustomJSONFormatterTest.class.getName());
-	private CustomJSONFormatter formatter;
-	private CustomJSONValidatorFilters validator;
+	private CustomJSONFormatterService formatter;
+	private CustomJSONValidatorFiltersService validator;
 	
 	@BeforeAll
 	public void setUp() {
-		formatter = new CustomJSONFormatter();
-		validator = new CustomJSONValidatorFilters();
+		formatter = new CustomJSONFormatterService();
+		validator = new CustomJSONValidatorFiltersService();
 	}
 	
 	@Test
@@ -172,7 +172,7 @@ public class CustomJSONFormatterTest{
 	@Test
 	@DisplayName("Should throws NullPointerException if parameter in CustomJSONFormatter is an empty String")
 	@Order(13)
-	public void shouldThrowsNullPointerExceptionIfParamIsEmptyString() throws IOException {
+	public void shouldThrowsJsonParseExceptionIfParamIsEmptyString() throws IOException {
 		assertThrows(JsonParseException.class,()->{
 			formatter.checkValidityAndFormatObject("", false, false);
 	    });
@@ -379,7 +379,7 @@ public class CustomJSONFormatterTest{
 	@Test
 	@DisplayName("Should remove more than one attribute from malformed String, but the final result is a JsonSyntaxException")
 	@Order(33)
-	public void shouldRemoveAttributesWithException() throws IOException {
+	public void shouldThrowsJsonSyntaxExceptionOnRemoveAttributes() throws IOException {
 		assertThrows(JsonSyntaxException.class,()->{
 			String jsonToRemove = "{id:265998308001,productCode:02-659983080,purchaseDate:2018-01-17,customer:{pf:{cpf:012345678,name:Mariana},deliveryAddress:{street:Rua Fechada,number:666,additionalInfo:casa,reference:nos fundos do armazem,neighborhood:Lavras,city:Lavras,state:MG,zipcode:01234000},telephones:{main:{ddd:35,number:38222482},secondary:{ddd:35,number:38222482},business:{ddd:35,number:38222482}}},payer:{pf:{cpf:012345678,name:Mariana},birthDate:1988-07-22,billingAddress:{street:Rua Fechada,number:22,additionalInfo:casa da rua (error},reference:em Frente a Praca Agusto Silva,neighborhood:Lavras,city:Lavras,state:MG,zipcode:24415040},business:{ddd:35,number:38222482}}},totalAmount:183.98}";
 			logger.info("Invalid json with string to remove: " + jsonToRemove);

@@ -11,9 +11,8 @@ import io.github.mariazevedo88.jfv.enumeration.DelimitersEnum;
  * 
  * @author Mariana Azevedo
  * @since 18/08/2019
- *
  */
-public class CustomJSONValidatorFilters {
+public class CustomJSONValidatorFiltersService {
 	
 	/**
 	 * Method that verifies with string still has a invalid values or keys.

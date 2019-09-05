@@ -6,7 +6,7 @@ import org.apache.log4j.Logger;
 
 import com.google.gson.JsonElement;
 
-import io.github.mariazevedo88.jfv.service.CustomJSONFormatter;
+import io.github.mariazevedo88.jfv.service.CustomJSONFormatterService;
 
 /**
  * Application's main class 
@@ -34,7 +34,7 @@ public class JsonFormatterValidatorApplication {
 		
 		logger.info("Started Json Formatter Validator Application");
 		
-		CustomJSONFormatter formatter = new CustomJSONFormatter();
+		CustomJSONFormatterService formatter = new CustomJSONFormatterService();
 		
 		for(String arg : args) {
 			json = formatter.checkValidityAndFormatObject(arg, false, false);
