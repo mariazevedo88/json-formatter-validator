@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import io.github.mariazevedo88.jfv.enumeration.DelimitersEnum;
+import io.github.mariazevedo88.jfv.model.enumeration.DelimitersEnum;
 
 /**
  * Class with method that verify, validates and filters a JSON

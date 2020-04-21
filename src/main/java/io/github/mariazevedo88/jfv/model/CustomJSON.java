@@ -59,7 +59,7 @@ public class CustomJSON {
 	public boolean isValidJson(Object json, boolean muteLog){
 		
 		if(json instanceof BufferedReader){
-			JsonElement res = new JsonParser().parse((BufferedReader)json);
+			JsonElement res = JsonParser.parseReader((BufferedReader)json);
 			this.validJson = res;
 			return true;
 		}
@@ -96,7 +96,7 @@ public class CustomJSON {
 		
 		if(json instanceof String){
 			try {
-				res = new JsonParser().parse((String)json);
+				res = JsonParser.parseString((String)json);
 			}catch(JsonSyntaxException e) {
 				if(!muteException) {
 					throw new JsonSyntaxException("Error: JSON with more invalid characters than commas and quotes on keys and values.");
@@ -107,7 +107,7 @@ public class CustomJSON {
 		}
 		
 		if(json instanceof BufferedReader){
-			res = new JsonParser().parse((BufferedReader)json);
+			res = JsonParser.parseReader((BufferedReader)json);
 		}
 		
 		if (res != null) {

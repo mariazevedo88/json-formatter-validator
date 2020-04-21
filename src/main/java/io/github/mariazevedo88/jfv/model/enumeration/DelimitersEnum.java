@@ -1,4 +1,4 @@
-package io.github.mariazevedo88.jfv.enumeration;
+package io.github.mariazevedo88.jfv.model.enumeration;
 
 /**
  * Enum that lists the items used as delimiters in the application.
