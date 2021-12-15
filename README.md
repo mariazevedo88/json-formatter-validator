@@ -85,8 +85,8 @@ logger.info(id.getAsLong());
 
 - [Java 8](https://www.oracle.com/technetwork/pt/java/javase/downloads/index.html)
 - [Maven](https://maven.apache.org/)
-- [Gson](https://mvnrepository.com/artifact/com.google.code.gson/gson/2.8.5)
-- [log4j](https://mvnrepository.com/artifact/log4j/log4j/1.2.17)
+- [Gson 2.8.9](https://mvnrepository.com/artifact/com.google.code.gson/gson)
+- [log4j 2.16.0](https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core)
 - [JUnit 5](https://junit.org/junit5/docs/current/user-guide/)
 
 ## How to use
@@ -97,7 +97,7 @@ You must import .jar into the classpath of your project. If your project is a ma
 <dependency>
   <groupId>io.github.mariazevedo88</groupId>
   <artifactId>json-formatter-validator</artifactId>
-  <version>2.0.5</version>
+  <version>2.0.6</version>
 </dependency>
 ```
 
