@@ -12,7 +12,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -45,7 +46,7 @@ import io.github.mariazevedo88.jfv.service.CustomJSONValidatorFiltersService;
 @TestMethodOrder(OrderAnnotation.class)
 public class CustomJSONFormatterTest{
 	
-	private static final Logger logger = Logger.getLogger(CustomJSONFormatterTest.class.getName());
+	private static final Logger logger = LogManager.getLogger(CustomJSONFormatterTest.class.getName());
 	private CustomJSONFormatterService formatter;
 	private CustomJSONValidatorFiltersService validator;
 	

@@ -9,7 +9,8 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
@@ -26,7 +27,7 @@ import io.github.mariazevedo88.jfv.model.enumeration.DelimitersEnum;
  */
 public class CustomJSONFormatterService {
 	
-	private static final Logger logger = Logger.getLogger(CustomJSONFormatterService.class.getName());
+	private static final Logger logger = LogManager.getLogger(CustomJSONFormatterService.class.getName());
 	private CustomJSON customJson;
 	
 	public CustomJSONFormatterService() {

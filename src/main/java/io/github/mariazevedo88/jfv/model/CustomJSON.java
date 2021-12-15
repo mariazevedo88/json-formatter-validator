@@ -2,7 +2,8 @@ package io.github.mariazevedo88.jfv.model;
 
 import java.io.BufferedReader;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -18,7 +19,7 @@ import com.google.gson.JsonSyntaxException;
  */
 public class CustomJSON {
 	
-	private static final Logger logger = Logger.getLogger(CustomJSON.class.getName());
+	private static final Logger logger = LogManager.getLogger(CustomJSON.class.getName());
 	private JsonElement validJson;
 	
 	/**
