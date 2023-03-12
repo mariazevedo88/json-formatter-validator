@@ -31,7 +31,7 @@
 		<java.version>1.8</java.version>
 		
 		<gson.version>2.10</gson.version>
-		<log4j.version>2.19.0</log4j.version>
+		<log4j.version>2.20.0</log4j.version>
 		<junit.jupiter.version>5.8.2</junit.jupiter.version>
 		<jacoco.version>0.8.7</jacoco.version>
 		<compiler.plugin.version>3.8.1</compiler.plugin.version>
